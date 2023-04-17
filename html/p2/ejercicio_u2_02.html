@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<!--
+    Nombre: Gustavo Michael Larios Guerra
+    Materia: Programación Web I
+    Fecha: 02/Marzo/2023 - 09 /Marzo/2023
+    Descripción: Etiquetas para Formularios
+-->
+<html lang="es">
+    <head>
+        <title>Unidad 02 - Ejercicio 02</title>
+        <meta charset="utf-8">
+        <meta name="author" content="Gustavo Michael Larios Guerra">
+        <meta name="revised" content="Jueves 9 me marzo 2023">
+        <meta name="description" content="form, label, button, input, datalist, progress. text, password, 
+        hidden, radio, checkbox, color, data, time, datetime, month, week, number, reset, sumbit, min, max, 
+        placeholder, value, checked, list ">
+
+        <style>
+            body{
+                background-color: black;
+            }
+
+            h1, label, form, hgroup{
+                color: aliceblue;
+                background-color: black;
+            }
+
+        </style>
+
+    </head>
+    <body>       
+        <hgroup>
+            <h1>Formularios Web</h1>
+            <form action="">
+                <p>Formulario <br>Web HTML</p>
+                <label>Etiqueta Label</label>
+                <br><label>Control (Botón): </label><button>Aceptar</button>
+                <br><label>Control (Input: Text):</label><input type="text">
+                <br><label>Control (Input: Contraseña):</label><input type="password">
+                <br><label>Control (Input: Oculto):</label><input type="hidden">
+                <br><label>Control (Input: Radio):</label><input type="radio">
+                <br><label>Control (Input: ):</label><input type="checkbox">
+                <br><label>Control (Input: action):</label><input type="file">
+                <br> <label >Control (Input: fecha )</label> <input type="date">
+                <br> <label >Control (Input:  hora)</label> <input type="time">
+                <br> <label >Control (Input: fecha y hora)</label> <input type="datetime-local">
+                <br> <label >Control (Input: fecha y hora)</label> <input type="month">
+                <br> <label >Control (Input: numeros)</label> <input type="number" >
+                <br> <label >Control (Input: numeros rango)</label> <input type="number" min="1" max="10">
+                <br> <label >Control (Input: reinicio)</label> <input type="reset" >
+                <br> <label >Control (Input: submit)</label> <input type="submit">
+
+                <br><br>
+
+
+
+                
+                    <br> <label> Control comboBox </label><input type="">
+                    <datalist id="listavalores">
+                        <option value="verdadero"></option>
+                        <option value="falso"></option>
+                    </datalist>
+
+                    <br>
+                    <br><label for="">Control: (caja de Texto):</label> <textarea placeholder="Comentarios"></textarea>
+                    <br><label for="">Control: (Barra de progreso):</label> <progress min="'0" max="100" value="0"></progress>
+                    <br><label for="">Control: (Barra de progreso):</label> <progress min="'0" max="100" value="25"></progress>
+                    <br><label for="">Control: (Barra de progreso):</label> <progress min="'0" max="100" value="50"></progress>
+                    <br><label for="">Control: (Barra de progreso):</label> <progress min="'0" max="100" value="75"></progress>
+                    <br><label for="">Control: (Barra de progreso):</label> <progress min="'0" max="100" value="100"></progress>
+
+
+                
+
+                
+            </form>
+        </hgroup>
+
+        <hgroup>
+            <h1>Ejemplos</h1>
+            <p>Radio input</p>
+            <form action="">
+                <label for="">1.Se puede decir que Html es facil? </label> 
+                    <br><input type="radio" name="pregunta_1"> Verdadero
+                    <br><input type="radio" name="pregunta_1"> Falso
+                    
+                    <br><label>Selecciona: </label>
+                    
+                <select>
+                    
+                    <option >Verdad</option>
+                    <option value="">Falso</option>
+                </select>
+                
+                <select name="" id="">
+                    <option>Aguascalientes</option>
+                    <option>Baja California</option>
+                    <option>Baja California Sur</option>
+                    <option>Campeche</option>
+                    <option>Chiapas</option>
+                    <option>Chihuahua</option>
+                    <option>Coahuila de Zaragoza</option>
+                    <option>Colima</option>
+                    <option>Ciudad de México</option>
+                    <option>Durango</option>
+                    <option>Guanajuato</option>
+                    <option>Guerrero</option>
+                    <option>Hidalgo</option>
+                    <option>Jalisco</option>
+                    <option>México</option>
+                    <option>Michoacán de Ocampo</option>
+                    <option>Morelos</option>
+                    <option>Nayarit</option>
+                    <option>Nuevo León</option>
+                    <option>Oaxaca</option>
+                    <option>Puebla</option>
+                    <option>Querétaro</option>
+                    <option>Quintana Roo</option>
+                    <option>San Luis Potosí</option>
+                    <option>Sinaloa</option>
+                    <option>Sonora</option>
+                    <option>Tabasco</option>
+                    <option>Tamaulipas</option>
+                    <option>Tlaxcala</option>
+                    <option>Veracruz de Ignacio de la Llave</option>
+                    <option>Yucatán</option>
+                    <option>Zacatecas</option>
+            </select>
+
+
+
+            <p>Estados de la republica 2.0</p><input list="Estados">
+            <datalist id="Estados">
+                <option value="Aguascalientes">
+                    <option value="Baja California">
+                    <option value="Baja California Sur">
+                    <option value="Campeche">
+                    <option value="Chiapas">
+                    <option value="Chihuahua">
+                    <option value="Coahuila de Zaragoza">
+                    <option value="Colima">
+                    <option value="Ciudad de México">
+                    <option value="Durango">
+                    <option value="Guanajuato">
+                    <option value="Guerrero">
+                    <option value="Hidalgo">
+                    <option value="Jalisco">
+                    <option value="México">
+                    <option value="Michoacán de Ocampo">
+                    <option value="Morelos">
+                    <option value="Nayarit">
+                    <option value="Nuevo León">
+                    <option value="Oaxaca">
+                    <option value="Puebla">
+                    <option value="Querétaro">
+                    <option value="Quintana Roo">
+                    <option value="San Luis Potosí">
+                    <option value="Sinaloa">
+                    <option value="Sonora">
+                    <option value="Tabasco">
+                    <option value="Tamaulipas">
+                    <option value="Tlaxcala">
+                    <option value="Veracruz de Ignacio de la Llave">
+                    <option value="Yucatán">
+                    <option value="Zacatecas">
+                    <option value="Baja California">
+                    <option value="Baja California Sur">
+                    <option value="Campeche">
+                    <option value="Chiapas">
+                    <option value="Chihuahua">
+                    <option value="Coahuila de Zaragoza">
+                    <option value="Colima">
+                    <option value="Ciudad de México">
+                    <option value="Durango">
+                    <option value="Guanajuato">
+                    <option value="Guerrero">
+                    <option value="Hidalgo">
+                    <option value="Jalisco">
+                    <option value="México">
+                    <option value="Michoacán de Ocampo">
+                    <option value="Morelos">
+                    <option value="Nayarit">
+                    <option value="Nuevo León">
+                    <option value="Oaxaca">
+                    <option value="Puebla">
+                    <option value="Querétaro">
+                    <option value="Sinaloa">
+                    <option value="Sonora">
+                    <option value="Tabasco">
+                    <option value="Tamaulipas">
+                    <option value="Tlaxcala">
+                    <option value="Veracruz de Ignacio de la Llave">
+                    <option value="Yucatán">
+                    <option value="Zacatecas">
+            </datalist>
+
+            <br>
+            <p>LISTADO DE MUNICIPIOS</p>
+            <input list="municipios" >
+            <datalist id="municipios">
+                <option value= 'Acuitzio'  > 
+                    <option value= 'Aguililla'  > 
+                    <option value= 'Álvaro Obregón'  > 
+                    <option value= 'Angamacutiro'  > 
+                    <option value= 'Angangueo'  > 
+                    <option value= 'Apatzingán'  > 
+                    <option value= 'Aporo'  > 
+                    <option value= 'Aquila'  > 
+                    <option value= 'Ario'  > 
+                    <option value= 'Arteaga'  > 
+                    <option value= 'Briseñas'  > 
+                    <option value= 'Buenavista'  > 
+                    <option value= 'Carácuaro'  > 
+                    <option value= 'Coahuayana'  > 
+                    <option value= 'Coalcomán de Vázquez Pallares'  > 
+                    <option value= 'Coeneo'  > 
+                    <option value= 'Contepec'  > 
+                    <option value= 'Copándaro'  > 
+                    <option value= 'Cotija'  > 
+                    <option value= 'Cuitzeo'  > 
+                    <option value= 'Charapan'  > 
+                    <option value= 'Charo'  > 
+                    <option value= 'Chavinda'  > 
+                    <option value= 'Cherán'  > 
+                    <option value= 'Chilchota'  > 
+                    <option value= 'Chinicuila'  > 
+                    <option value= 'Chucándiro'  > 
+                    <option value= 'Churintzio'  > 
+                    <option value= 'Churumuco'  > 
+                    <option value= 'Ecuandureo'  > 
+                    <option value= 'Epitacio Huerta'  > 
+                    <option value= 'Erongarícuaro'  > 
+                    <option value= 'Gabriel Zamora'  > 
+                    <option value= 'Hidalgo'  > 
+                    <option value= 'La Huacana'  > 
+                    <option value= 'Huandacareo'  > 
+                    <option value= 'Huaniqueo'  > 
+                    <option value= 'Huetamo'  > 
+                    <option value= 'Huiramba'  > 
+                    <option value= 'Indaparapeo'  > 
+                    <option value= 'Irimbo'  > 
+                    <option value= 'Ixtlán'  > 
+                    <option value= 'Jacona'  > 
+                    <option value= 'Jiménez'  > 
+                    <option value= 'Jiquilpan'  > 
+                    <option value= 'Juárez'  > 
+                    <option value= 'Jungapeo'  > 
+                    <option value= 'Lagunillas'  > 
+                    <option value= 'Madero'  > 
+                    <option value= 'Maravatío'  > 
+                    <option value= 'Marcos Castellanos'  > 
+                    <option value= 'Lázaro Cárdenas'  > 
+                    <option value= 'Morelia'  > 
+                    <option value= 'Morelos'  > 
+                    <option value= 'Múgica'  > 
+                    <option value= 'Nahuatzen'  > 
+                    <option value= 'Nocupétaro'  > 
+                    <option value= 'Nuevo Parangaricutiro'  > 
+                    <option value= 'Nuevo Urecho'  > 
+                    <option value= 'Numarán'  > 
+                    <option value= 'Ocampo'  > 
+                    <option value= 'Pajacuarán'  > 
+                    <option value= 'Panindícuaro'  > 
+                    <option value= 'Parácuaro'  > 
+                    <option value= 'Paracho'  > 
+                    <option value= 'Pátzcuaro'  > 
+                    <option value= 'Penjamillo'  > 
+                    <option value= 'Peribán'  > 
+                    <option value= 'La Piedad'  > 
+                    <option value= 'Purépero'  > 
+                    <option value= 'Puruándiro'  > 
+                    <option value= 'Queréndaro'  > 
+                    <option value= 'Quiroga'  > 
+                    <option value= 'Cojumatlán de Régules'  > 
+                    <option value= 'Los Reyes'  > 
+                    <option value= 'Sahuayo'  > 
+                    <option value= 'San Lucas'  > 
+                    <option value= 'Santa Ana Maya'  > 
+                    <option value= 'Salvador Escalante'  > 
+                    <option value= 'Senguio'  > 
+                    <option value= 'Susupuato'  > 
+                    <option value= 'Tacámbaro'  > 
+                    <option value= 'Tancítaro'  > 
+                    <option value= 'Tangamandapio'  > 
+                    <option value= 'Tangancícuaro'  > 
+                    <option value= 'Tanhuato'  > 
+                    <option value= 'Taretan'  > 
+                    <option value= 'Tarímbaro'  > 
+                    <option value= 'Tepalcatepec'  > 
+                    <option value= 'Tingambato'  > 
+                    <option value= 'Tingüindín'  > 
+                    <option value= 'Tiquicheo de Nicolás Romero'  > 
+                    <option value= 'Tlalpujahua'  > 
+                    <option value= 'Tlazazalca'  > 
+                    <option value= 'Tocumbo'  > 
+                    <option value= 'Tumbiscatío'  > 
+                    <option value= 'Turicato'  > 
+                    <option value= 'Tuxpan'  > 
+                    <option value= 'Tuzantla'  > 
+                    <option value= 'Tzintzuntzan'  > 
+                    <option value= 'Tzitzio'  > 
+                    <option value= 'Uruapan'  > 
+                    <option value= 'Venustiano Carranza'  > 
+                    <option value= 'Villamar'  > 
+                    <option value= 'Vista Hermosa'  > 
+                    <option value= 'Yurécuaro'  > 
+                    <option value= 'Zacapu'  > 
+                    <option value= 'Zamora'  > 
+                    <option value= 'Zináparo'  > 
+                    <option value= 'Zinapécuaro'  > 
+                    <option value= 'Ziracuaretiro'  > 
+                    <option value= 'Zitácuaro'  > 
+                                    
+            </datalist>
+
+
+                <br>
+                <p> Radio button multiple</p>
+                <label for="">2.Es las siglas de HyperText Markup Lenguage </label>
+                <br><input type="radio" name="pregunta_2"> CSS
+                <br><input type="radio" name="pregunta_2"> HTML
+                <br><input type="radio" name="pregunta_2"> PHP
+                <br><input type="radio" name="pregunta_2"> JavaScript
+                <br><input type="radio" name="pregunta_2"> SQL
+                
+                <br> <br>
+
+                <label for="">3. Tecnología aplicada en programación web</label>
+                <br> <input type="checkbox" name="pregunta_3"> JS
+                <br> <input type="checkbox" name="pregunta_3"> HTML
+                <br> <input type="checkbox" name="pregunta_3"> SQL
+                <br> <input type="checkbox" name="pregunta_3"> PHP
+                <br> <input type="checkbox" name="pregunta_3"> youtube
+
+                <label for="">4. Acepta estar de acuerdo con todos </label>
+                <br><input type="radio" name="form4"> si.
+                <br><input type="radio" name="form4" checked> NO. <!--AYUDA A DAR POR SENTADO QUE YA ESTÁ SELECCIONADO-->
+                <button> Aceptar</button>
+            
+                <p>PlaceHolder</p> 
+                <p> Formatos </p>
+                <label>Telefono</label> <br></br> <input type="text" placeholder="(+52-1234567890)">  <br>
+                <!-- Placeholder: Elemento de referencia -->
+                <label>Codigo postal</label> <br></br> <input type="text" placeholder="xxx" value="xxxx">  
+                <!-- Es recomendable otorgarle  toda la información posible al usuario-->
+                <label>Matricula</label> <br></br> <input type="text" placeholder="xxx" value="xxxx" maxlength="3" minlength="3">  
+
+                </form>
+
+
+
+
+
+
+        </hgroup>
+
+            <br style="background-color: aquamarine;">
+
+        <hgroup>
+            <br>
+            <form>
+                <label for="text-input">Input de texto:</label>
+                <input type="text" id="text-input" name="text-input"><br>
+          
+                <label for="password-input">Input de contraseña:</label>
+                <input type="password" id="password-input" name="password-input"><br>
+          
+                <label for="email-input">Input de correo electrónico:</label>
+                <input type="email" id="email-input" name="email-input"><br>
+          
+                <label for="number-input">Input de número:</label>
+                <input type="number" id="number-input" name="number-input"><br>
+          
+                <label for="range-input">Input de rango:</label>
+                <input type="range" id="range-input" name="range-input"><br>
+          
+                <label for="date-input">Input de fecha:</label>
+                <input type="date" id="date-input" name="date-input"><br>
+          
+                <label for="time-input">Input de tiempo:</label>
+                <input type="time" id="time-input" name="time-input"><br>
+          
+                <label for="color-input">Input de color:</label>
+                <input type="color" id="color-input" name="color-input"><br>
+          
+                <label for="checkbox-input">Input de casilla de verificación:</label>
+                <input type="checkbox" id="checkbox-input" name="checkbox-input"><br>
+          
+                <label for="radio-input1">Input de botón de opción:</label>
+                <input type="radio" id="radio-input1" name="radio-input" value="opcion1">
+                <label for="radio-input1">Opción 1</label>
+                <input type="radio" id="radio-input2" name="radio-input" value="opcion2">
+                <label for="radio-input2">Opción 2</label><br>
+          
+                <label for="file-input">Input de archivo:</label>
+                <input type="file" id="file-input" name="file-input"><br>
+          
+                <label for="submit-button">Botón de envío:</label>
+                <input type="submit" id="submit-button" name="submit-button">
+
+                
+              </form>
+          
+        </hgroup>
+
+    </body>
+</html>
