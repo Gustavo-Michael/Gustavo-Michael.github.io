@@ -382,7 +382,96 @@
             <td>98</td>
             <td>99</td>
             <td>100</td>
+        </tr>
 
-</tr>
+        <h1>Tablas</h1>
+        <h2>Combinar reglones y columnas</h2>
+        <hgroup>
+        <table border="3">
+            <tr>
+                <th>No.</th>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+            </tr>
+            <tr>
+                <th>1</th>
+                <th>Juan</th>
+                <th>&nbsp;</th>
+                <th>Pérez</th>
+            </tr>
+            <tr>
+                <th>2</th>
+                <th>Pedro</th>
+                <th colspan="2"> López</th>
+            </tr>
+            <tr>
+                <th>3</th>
+                <th rowspan="2">Tomas</th>
+                <th>López</th>
+                <th>Pérez</th>
+            </tr>
+            <tr>
+                <th>4</th>
+                <th rowspan="2" colspan="2">Martínez</th>
+            </tr>
+            <tr>
+                <th>5</th>
+                <th>Gerardo</th>
+            </tr>
+            <tr>
+                <th>6</th>
+                <th colspan="2">Abraham</th>
+                <th>Martínez</th>
+            </tr>
+        </table>
+        </hgroup>
+        <hgroup>
+            <h2>Ejercicio No.1</h2>
+            <table border="3">
+                <tr><th colspan="4">Tabla No. 1</th></tr>
+                <tr><td>A</td><td>B</td><td rowspan="4">C</td><td>D</td></tr>
+                <tr><td rowspan="2">E</td><td>F</td><td rowspan="3">G</td></tr>
+                <tr><td>H</td></tr>
+                <tr><td>I</td><td>J</td></tr>
+            </table>
+        </hgroup>
+        <hgroup>
+            <h2>Ejercicio No.2</h2>
+            <table border="3">
+                <tr><th colspan="4">Tabla No. 2</th></tr>
+                <tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+                <tr><td rowspan="3">5</td><td>6</td><td colspan="2">7</td></tr>
+                <tr><td>8</td><td>9</td><td rowspan="2">10</td></tr>
+                <tr><td colspan="2">11</td></tr>
+            </table>
+        </hgroup>
+        <hgroup>
+            <h2>Ejercicio No.3</h2>
+            <table border="3">
+                <thead>
+                <tr><th colspan="4">Tabla No. 3</th></tr>
+                <tr><td>&nbsp;</td><td>comida</td><td>hotel</td><td>transporter</td></tr>
+                </thead>
+                <tbody>
+                    <tr><th colspan="4" >Vallarta</td></tr>
+                        <tr><td>01/Jul/2022</td><td>15</td><td>120</td><td>-</td></tr>
+                        <tr><td>02/Jul/2022</td><td>18</td><td>120</td><td>$34</td></tr>
+                        <tr><td>03/Jul/2022</td><td>25</td><td>120</td><td>-</td></tr>
+                        <tr><th colspan="4" >Nuevo Vallarta</td></tr>
+                        <tr><td>04/Jul/2022</td><td>10</td><td>75</td><td>$12</td></tr>
+                        <tr><td>05/Jul/2022</td><td>12</td><td>75</td><td>$14</td></tr>
+                </tbody>
+                <tr><th>TOTAL</td><th>80</td><th>510</td><th>$60</td></tr>
+            </table>
+        </hgroup>
+
+        <hgroup>
+            <table>
+                <tr><th colspan="4">Tabla No.4</th></tr>
+
+            </table>
+        </hgroup>
+
 </body>
 </html>
