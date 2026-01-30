@@ -1,1 +1,151 @@
+    :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff; 
+            --success: #238636;
+            --card-bg: #161b22;
+            --border: #30363d;
+        }
 
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 1. ENCABEZADO (HEADER) */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .identity h1 { margin: 0; color: var(--accent); font-size: 1.5rem; }
+        .identity p { margin: 2px 0; color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Menú de navegación */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--accent); }
+
+        /* SECCIONES GENERALES */
+        section {
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h2 { color: var(--accent); border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        /* 2. PRESENTACIÓN DEL PORTAFOLIO */
+        .presentation-box {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid var(--accent);
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        /* 3. PERFIL DEL ESTUDIANTE */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+    .profile-pic {
+            width: 150px;
+            height: 150px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent); 
+            border-radius: 50%; 
+            overflow: hidden; 
+            display: flex;            
+            align-items: center;      
+            justify-content: center;  
+            margin: 0 auto;
+            padding: 0; 
+        }
+
+        /* Esto controla cómo se comporta la imagen DENTRO del círculo */
+            .profile-pic img {
+                width: 100%;
+            height: 100%;
+            object-fit: cover; /* CRUCIAL: Hace que la imagen cubra todo el círculo sin estirarse ni deformarse */
+            display: block; /* Elimina pequeños espacios extraños debajo de las imágenes */
+        }
+
+        /* 4. INFORMACIÓN TÉCNICA */
+        .tech-list {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .tech-badge {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        /* 5. FORMULARIO DE CONTACTO */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 600px;
+        }
+        input, textarea {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+        button:hover { opacity: 0.9; }
+
+        /* 6. FOOTER */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
