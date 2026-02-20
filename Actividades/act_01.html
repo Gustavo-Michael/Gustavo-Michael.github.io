@@ -4,84 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actividad 01: Caso Colonial Pipeline</title>
+    <link rel="stylesheet" href="../Design/design.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --accent: #58a6ff;
-            --success: #238636;
-            --danger: #da3633;
-            --card-bg: #161b22;
-            --border: #30363d;
-            --table-header: #21262d;
-        }
-
-        body {
-            font-family: 'Consolas', 'Monaco', monospace;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        /* BARRA DE NAVEGACIÓN SUPERIOR */
-        .top-bar {
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .back-btn {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .back-btn:hover { text-decoration: underline; }
-
-        /* CONTENEDOR PRINCIPAL */
-        .container {
-            max-width: 950px; /* Un poco más ancho para las tablas */
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* ENCABEZADOS */
-        h1, h2, h3 { color: var(--accent); }
-        h1 { border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-        h2 { margin-top: 50px; border-left: 4px solid var(--accent); padding-left: 10px; }
-        h3 { color: var(--text-muted); margin-top: 30px; font-size: 1.1em;}
-        
-        /* CAJAS DE TEXTO / EQUIPO */
-        .info-box {
-            background: rgba(88, 166, 255, 0.1);
-            border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-        .team-list {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            font-size: 0.9em;
-            color: var(--text-muted);
-        }
-        .team-list li::before { content: "> "; color: var(--success); }
-
-        /* TABLAS (ESTILO HACKER) */
+        /* Estilos específicos para las tablas y reportes que no están en design.css */
         .table-container {
             overflow-x: auto;
             margin: 20px 0;
@@ -91,133 +18,117 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85em; /* Letra un poco más pequeña para que quepa todo */
+            font-size: 0.9em;
             min-width: 600px;
         }
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #30363d;
-            vertical-align: top;
         }
         th {
-            background-color: var(--table-header);
+            background-color: #21262d;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: bold;
         }
         tr:hover { background-color: rgba(88, 166, 255, 0.05); }
-        
-        /* Celdas específicas */
         .cell-highlight { color: var(--success); font-weight: bold; }
         .cell-danger { color: #ff7b72; }
-
-        /* IMÁGENES */
+        
         .evidence-img {
             width: 100%;
             max-width: 800px;
-            height: auto;
             border: 1px solid var(--border);
             border-radius: 4px;
             margin: 20px 0;
             display: block;
         }
-        .img-caption {
-            text-align: center;
-            font-size: 0.85em;
-            color: var(--text-muted);
-            margin-top: -15px;
-            margin-bottom: 30px;
-            font-style: italic;
-        }
-
-        /* BADGES */
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
+        
+        /* Botón de descarga de PDF */
+        .btn-pdf {
+            background-color: var(--danger); /* Rojo para PDF */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
             font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s;
+            border: 1px solid #da3633;
         }
-        .badge-red { background: rgba(218, 54, 51, 0.2); color: #ff7b72; border: 1px solid #da3633; }
-
-        footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 0.8em;
-            color: var(--text-muted);
+        .btn-pdf:hover { opacity: 0.8; }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Portafolio</a>
-        <span>CNO V - Seguridad Informática</span>
-    </div>
+    <header style="padding: 10px 0; background: var(--card-bg); border-bottom: 1px solid var(--border);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../actividades.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">
+                <i class="fas fa-arrow-left"></i> Actividades
+            </a>
+            <span style="color: var(--text-muted); font-size: 0.9em;">CNO V - Seguridad Informática</span>
+        </div>
+    </header>
 
-    <div class="container">
-        <header>
-            <span class="badge badge-red" style="border-color: var(--success); color: var(--success); background: rgba(35, 134, 54, 0.2);">Completado</span>
-            <h1>Actividad 01: Análisis Colonial Pipeline</h1>
-            
-            <div class="info-box">
-                <p><strong>Objetivo:</strong> Análisis forense, técnico y económico del ciberataque de ransomware a infraestructura crítica.</p>
-                <strong>Equipo 3:</strong>
-                <ul class="team-list">
-                    <li>América Fabiola Guerra Ramírez</li>
-                    <li>Bruno Axel Puente Luna</li>
-                    <li>Laura Ivon Montelongo Martinez</li>
-                    <li>Gustavo Michael Larios Guerra</li>
-                    <li>Carol Elizabeth Cortes Beltran</li>
-                    <li>Benites Rangel Cesar Yahir</li>
-                    <li>Cristian Alejandro Rodriguez Moreno</li>
-                </ul>
+    <div class="container" style="margin-top: 20px;">
+        
+        <div class="header-actions">
+            <div>
+                <h1 style="margin-top: 10px; color: var(--accent);">Actividad 01: Análisis Colonial Pipeline</h1>
             </div>
-        </header>
+            <a href="PDFs/act01-Equipo3.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
 
         <section>
-            <h2>1. Introducción y Contexto</h2>
+            <h2>Introducción Contextual</h2>
             <p>Análisis del ataque perpetrado por el grupo <strong>DarkSide</strong> en mayo de 2021. La falta de segmentación entre redes TI (Administrativas) y OT (Operativas) obligó a detener el suministro de combustible en la Costa Este de EE.UU.</p>
-            
-            <img src="../img/mapa-colonial.png" alt="Mapa del Oleoducto Colonial Pipeline" class="evidence-img">
-            <p class="img-caption">Fig 1. Alcance geográfico de la infraestructura afectada.</p>
-        </section>
+            </section>
 
         <section>
-            <h2>2. Cronología e Investigación</h2>
+            <h2>Cronología e Investigación</h2>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Fase</th>
                             <th>Evento / Fecha</th>
-                            <th>Descripción del Suceso</th>
+                            <th>Descripción</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><span class="cell-highlight">I. Infiltración</span></td>
                             <td>Antes del 7 de mayo</td>
-                            <td>Acceso inicial vía VPN "Legacy" (obsoleta) sin MFA. Credenciales filtradas en Dark Web.</td>
+                            <td>Acceso vía VPN "Legacy" sin MFA. Credenciales filtradas.</td>
                         </tr>
                         <tr>
                             <td><span class="cell-danger">II. El Ataque</span></td>
-                            <td>7 de mayo (Madrugada)</td>
-                            <td><strong>Exfiltración:</strong> Robo de ~100 GB de datos en 2 horas.<br><strong>Cifrado:</strong> DarkSide activa ransomware en sistemas TI.</td>
+                            <td>7 de mayo</td>
+                            <td>Exfiltración de ~100 GB y cifrado de sistemas TI.</td>
                         </tr>
                         <tr>
                             <td><span class="cell-danger">III. Crisis</span></td>
                             <td>8-10 de mayo</td>
-                            <td>Parada preventiva de OT. Escasez de combustible y pánico en la Costa Este. Pago de rescate (75 BTC / ~$5M USD).</td>
+                            <td>Parada de OT. Pago de rescate (~$5M USD).</td>
                         </tr>
                         <tr>
                             <td><span class="cell-highlight">IV. Retorno</span></td>
                             <td>12-14 de mayo</td>
-                            <td>Reinicio manual y limitado. Colonial recibe llave de descifrado lenta e ineficiente. DarkSide anuncia cierre.</td>
+                            <td>Reinicio manual y paulatino de operaciones.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -225,33 +136,21 @@
         </section>
 
         <section>
-            <h2>3. Ficha Técnica del Ataque</h2>
+            <h2>Ficha Técnica del Ataque</h2>
             <div class="table-container">
                 <table>
                     <tbody>
                         <tr>
                             <th>Tipo de ataque</th>
-                            <td>Ransomware de <strong>Doble Extorsión</strong> (Cifrado + Amenaza de publicación de datos).</td>
-                        </tr>
-                        <tr>
-                            <th>Actor / Grupo</th>
-                            <td><strong>DarkSide</strong> (Modelo RaaS - Ransomware as a Service). Origen probable: Rusia.</td>
+                            <td>Ransomware de Doble Extorsión (DarkSide).</td>
                         </tr>
                         <tr>
                             <th>Vector de Entrada</th>
-                            <td>Acceso remoto mediante cuenta VPN antigua activa pero no utilizada.</td>
+                            <td>Credenciales VPN comprometidas (Sin MFA).</td>
                         </tr>
                         <tr>
-                            <th>Vulnerabilidad Explotada</th>
-                            <td class="cell-danger">Falla de políticas de identidad: Cuenta <strong>SIN Autenticación Multifactor (MFA)</strong> y contraseña filtrada.</td>
-                        </tr>
-                        <tr>
-                            <th>Sistemas Comprometidos</th>
-                            <td>Red administrativa TI, servidores de archivos, sistemas de facturación. (OT apagado por precaución).</td>
-                        </tr>
-                        <tr>
-                            <th>Mecanismos de Detección</th>
-                            <td>Investigación forense (Mandiant + FBI). Restauración vía Backups propios + Herramienta de descifrado.</td>
+                            <th>Impacto Principal</th>
+                            <td>Paralización de suministro de combustible (Costa Este EEUU).</td>
                         </tr>
                     </tbody>
                 </table>
@@ -259,116 +158,55 @@
         </section>
 
         <section>
-            <h2>4. Evaluación de Impacto (Tríada CIA)</h2>
-            <p>Análisis del daño a los principios fundamentales de seguridad:</p>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Principio</th>
-                            <th>Descripción del Impacto</th>
-                            <th>Evidencia del Caso</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Confidencialidad</strong></td>
-                            <td>Exfiltración masiva de datos y extorsión.</td>
-                            <td>"Los atacantes extrajeron unos 100GB de datos de la red corporativa en una ventana de 2 horas".</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Integridad</strong></td>
-                            <td>Cifrado de datos y eliminación de respaldos.</td>
-                            <td>Sistemas de facturación y contabilidad corruptos. Los respaldos online fueron comprometidos o eliminados.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Disponibilidad</strong></td>
-                            <td>Paralización operativa.</td>
-                            <td>Detención de 5,500 millas de oleoducto. Aumento del 4% en futuros de gasolina. Escasez en aeropuertos.</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <h2>Evaluación de Impacto (Tríada CIA)</h2>
+            <ul>
+                <li><strong>Confidencialidad:</strong> Violada por la exfiltración de 100GB de datos sensibles.</li>
+                <li><strong>Integridad:</strong> Comprometida por el cifrado de archivos y eliminación de respaldos.</li>
+                <li><strong>Disponibilidad:</strong> Afectación crítica; detención operativa del oleoducto por precaución.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Costo Total del Ciberataque</h2>
+            <p>Se estima un impacto total entre <strong>$2,525M y $3,800M MXN</strong>, considerando el rescate, costos de recuperación forense, pérdida de operatividad y aumento en precios del combustible.</p>
+        </section>
+
+        <section>
+            <h2>Relación con Marcos Normativos</h2>
+            <p>Fallas principales detectadas según ISO 27001:</p>
+            <ul>
+                <li><strong>A.9.2.3 (Gestión de contraseñas):</strong> No se forzó rotación ni MFA.</li>
+                <li><strong>A.13.1.1 (Controles de red):</strong> Falta de segmentación adecuada entre redes IT y OT.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Más información</h2>
+            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Sy6mVGrK3uc?si=TP-n6gH1W3JwuLzX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+        </section>
+
+        <section>
+            <h2>7. Conclusiones</h2>
+            <div class="presentation-box" style="background: var(--card-bg); border-color: var(--border);">
+                <p>El caso Colonial Pipeline demuestra que la ciberseguridad no es solo un problema de TI, sino un riesgo operativo crítico. La dependencia de sistemas heredados (Legacy) y la falta de higiene básica de seguridad (como la ausencia de MFA) pueden colapsar infraestructuras nacionales.</p>
             </div>
         </section>
 
         <section>
-            <h2>5. Costo Total del Ciberataque</h2>
-            <p>Cálculo basado en el marco de Adrian Mizzi.</p>
-            <img src="../img/diagrama-costos.png" alt="Esquema de Costos" class="evidence-img">
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Categoría</th>
-                            <th>Concepto</th>
-                            <th>Estimación (MXN)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Coste de Ruptura (CTB)</td>
-                            <td>Inversión del atacante</td>
-                            <td>$650k - $1.7M</td>
-                        </tr>
-                        <tr>
-                            <td>Coste de Protección (F)</td>
-                            <td>Gasto anual en seguridad</td>
-                            <td>$12.5M (Promedio)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Impacto Total</strong></td>
-                            <td>Pérdidas + Recuperación + Rescate</td>
-                            <td><strong class="cell-danger">$2,525M - $3,800M</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p><em>Conclusión: El costo del ataque fue entre 5 y 8 veces mayor que la inversión anual necesaria para prevenirlo.</em></p>
-        </section>
-
-        <section>
-            <h2>6. Relación con Marcos Normativos</h2>
-            <p>Controles que habrían mitigado el incidente (ISO 27001 & NIST CSF).</p>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Norma / Control</th>
-                            <th>Falla Detectada</th>
-                            <th>Mitigación / Prevención</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>ISO A.9.2.3</strong><br>Gestión de Credenciales</td>
-                            <td>Cuenta VPN sin MFA y contraseña débil.</td>
-                            <td>Exigir MFA y rotación de contraseñas habría bloqueado el acceso inicial.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>ISO A.13.1.1</strong><br>Controles de Red</td>
-                            <td>Falta de segmentación TI/OT.</td>
-                            <td>Una segmentación adecuada (DMZ/Firewalls industriales) habría evitado apagar el oleoducto.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>ISO A.12.3.1</strong><br>Copias de Seguridad</td>
-                            <td>Respaldos eliminados o ineficientes.</td>
-                            <td>Respaldos <strong>Offline (Air-gapped)</strong> habrían permitido restaurar sin pagar rescate.</td>
-                        </tr>
-                        <tr>
-                            <td><strong>NIST (Protect)</strong><br>PR.AC-1</td>
-                            <td>Accesos remotos no supervisados.</td>
-                            <td>Revisión periódica de cuentas habría eliminado la VPN "Legacy".</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h2>8. Referencias Bibliográficas</h2>
+            <ul style="color: var(--text-muted); font-size: 0.9em;">
+                <li> <a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-131a" target="_blank">[1] CISA, (mayo 2021). DarkSide Ransomware: Best Practices for Preventing Business Disruption from Ransomware Attacks</a></li>
+                <li> <a href="https://www.nytimes.com/es/2021/06/02/espanol/darkside-rusia-ciber-ataque.html" target="_blank">[1] New York Times, (junio 2021). El caso DarkSide: Rusia se está convirtiendo en el paraíso del cibersecuestro</a></li>
+                <li> <a href="https://ics-cert.kaspersky.com/publications/reports/2021/05/21/darkchronicles-the-consequences-of-the-colonial-pipeline-attack/" target="_blank">[1] Karspersky ICS CERT, (mayo 2021). DarkChronicles: the consequences of the Colonial Pipeline attack</a></li>
+                <li> <a href="https://archive.is/20210514165246/https:/www.bloomberg.com/news/articles/2021-05-13/colonial-pipeline-paid-hackers-nearly-5-million-in-ransom" target="_blank">[1] W. Turton Et al, (mayo 2021). Colonial Pipeline Paid Hackers Nearly $5 Million in Ransom</a></li>
+            </ul>
         </section>
 
         <footer>
-            <p>Análisis realizado para la materia de Seguridad Informática - Equipo 3</p>
-            <p>© 2026 Portafolio de Evidencias</p>
+            <p>Portafolio Académico 2026 - Gustavo Michael Larios Guerra</p>
         </footer>
+
     </div>
 
 </body>
