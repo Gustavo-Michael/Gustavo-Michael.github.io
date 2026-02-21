@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 06: Implementación VPN IPsec</title>
+    <link rel="stylesheet" href="../Design/design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ESTILOS COMPARTIDOS */
+        .btn-pdf {
+            background-color: #da3633;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            border: 1px solid #b62324;
+        }
+        .btn-pdf:hover { opacity: 0.9; }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo de Terminal Cisco */
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+        .question-title { color: var(--accent); font-weight: bold; margin-bottom: 10px; display: block; }
+        .code-snippet {
+            background: #161b22;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #e6edf3;
+            border: 1px solid var(--border);
+            display: block;
+            margin-top: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .comment { color: #8b949e; font-style: italic; }
+        .command { color: #7ee787; }
+        .parameter { color: #79c0ff; }
+    </style>
+</head>
+<body>
+
+    <header style="padding: 10px 0; background: var(--card-bg); border-bottom: 1px solid var(--border);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../actividades.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">
+                <i class="fas fa-arrow-left"></i> Volver a Actividades
+            </a>
+            <span style="color: var(--text-muted); font-size: 0.9em;">CNO V - Seguridad Informática</span>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 40px;">
+        
+        <div class="header-actions">
+            <div>
+                <h1 style="margin-top: 10px; color: var(--accent);">Actividad 06: Implementación IPsec VPN</h1>
+            </div>
+            <a target="_blank" href="PDFs/act06-178318.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+
+        <div class="presentation-box">
+            <p><strong>Objetivo:</strong> Configuración de un VPN Site-to-Site utilizando el protocolo IPsec para interconectar redes remotas de forma segura a través de Internet (Simulación en Cisco Packet Tracer).</p>
+            
+        </div>
+
+        <section>
+            <h2>Introducción Teórica</h2>
+            <p><strong>IPsec (Internet Protocol Security)</strong> es un conjunto de protocolos que operan en la capa de red (Capa 3 OSI) asegurando las comunicaciones IP mediante autenticación y cifrado de cada paquete.</p>
+            <ul style="margin-top: 10px; color: var(--text-muted);">
+                <li><strong>Confidencialidad:</strong> Uso de algoritmos de cifrado (DES, 3DES, AES).</li>
+                <li><strong>Integridad:</strong> Garantía de que los datos no han sido alterados (MD5, SHA).</li>
+                <li><strong>Autenticación:</strong> Verificación de los extremos del túnel (PSK, RSA).</li>
+            </ul>
+        </section>
+
+        <section>
+            <div style="text-align: center; margin: 20px 0;">
+                <img src="Material/cisco.jpg" alt="conexión">
+            </div>
+        </section>
+
+        <section>
+            <h2>Desarrollo de la Práctica</h2>
+            <p>A continuación se detallan los comandos aplicados en los routers de borde (R1 y R3) para establecer el túnel.</p>
+
+            <div class="question-block">
+                <span class="question-title">Paso 1: Definir Tráfico Interesante (ACL)</span>
+                <p>Se crea una lista de acceso extendida para identificar qué tráfico debe ser cifrado y enviado por el túnel.</p>
+                <div class="code-snippet">
+                    R1(config)# <span class="command">access-list</span> 100 <span class="parameter">permit ip</span> 10.1.1.0 0.0.0.255 10.2.2.0 0.0.0.255
+                </div>
+            </div>
+
+            <div class="question-block">
+                <span class="question-title">Paso 2: Configuración ISAKMP (Fase 1)</span>
+                <p>Negociación de parámetros de seguridad para establecer el canal de gestión (IKE).</p>
+                <div class="code-snippet">
+                    R1(config)# <span class="command">crypto isakmp policy</span> 10<br>
+                    R1(config-isakmp)# <span class="command">encryption</span> aes 256<br>
+                    R1(config-isakmp)# <span class="command">hash</span> sha<br>
+                    R1(config-isakmp)# <span class="command">authentication</span> pre-share<br>
+                    R1(config-isakmp)# <span class="command">group</span> 5<br>
+                    R1(config-isakmp)# <span class="command">exit</span><br>
+                    <span class="comment">! Definir clave compartida y dirección del peer remoto</span><br>
+                    R1(config)# <span class="command">crypto isakmp key</span> cisco123 <span class="parameter">address</span> 209.165.200.226
+                </div>
+            </div>
+
+            <div class="question-block">
+                <span class="question-title">Paso 3: Configuración IPsec (Fase 2)</span>
+                <p>Creación del <em>Transform Set</em> que define cómo se protegerán los datos del usuario.</p>
+                <div class="code-snippet">
+                    R1(config)# <span class="command">crypto ipsec transform-set</span> VPN-SET <span class="parameter">esp-aes esp-sha-hmac</span>
+                </div>
+            </div>
+
+            <div class="question-block">
+                <span class="question-title">Paso 4: Mapa Criptográfico (Crypto Map)</span>
+                <p>Vinculación de la ACL, el Peer remoto y el Transform Set.</p>
+                <div class="code-snippet">
+                    R1(config)# <span class="command">crypto map</span> VPN-MAP 10 <span class="parameter">ipsec-isakmp</span><br>
+                    R1(config-crypto-map)# <span class="command">set peer</span> 209.165.200.226<br>
+                    R1(config-crypto-map)# <span class="command">set pfs</span> group5<br>
+                    R1(config-crypto-map)# <span class="command">set transform-set</span> VPN-SET<br>
+                    R1(config-crypto-map)# <span class="command">match address</span> 100
+                </div>
+            </div>
+
+            <div class="question-block" style="border-bottom: none;">
+                <span class="question-title">Paso 5: Aplicar a la Interfaz</span>
+                <p>Activación del mapa en la interfaz de salida hacia Internet.</p>
+                <div class="code-snippet">
+                    R1(config)# <span class="command">interface</span> GigabitEthernet0/0<br>
+                    R1(config-if)# <span class="command">crypto map</span> VPN-MAP<br>
+                    <span class="comment">*Jan 3 07:16:26.785: %CRYPTO-6-ISAKMP_ON_OFF: ISAKMP is ON</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Más información</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/Z7LwU6H5IGE?si=Ly5Mk03V-dZxw1aS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </section>
+
+        <section>
+            <h2>Conclusiones</h2>
+            <div class="presentation-box" style="background: var(--card-bg); border-color: var(--border);">
+                <p> Esta actividad fue un ejemplo de cpomo establecer un VPN sitio a sitio con Ipsec, a mi parecer fue la actividad más dificil de comprender y realizar sin embargo es muy util.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Portafolio Académico 2026 - Gustavo Michael Larios Guerra</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

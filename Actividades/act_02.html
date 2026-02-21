@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 02: Servicios de Seguridad</title>
+    <link rel="stylesheet" href="../Design/design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Reutilizamos los estilos de tabla y reporte de la Actividad 01 */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+            min-width: 800px; /* Un poco más ancho por la cantidad de columnas */
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            vertical-align: top;
+        }
+        th {
+            background-color: #21262d;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+        tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+        .cell-highlight { color: var(--success); font-weight: bold; }
+        .cell-warning { color: #d29922; font-weight: bold; }
+        .cell-danger { color: #ff7b72; font-weight: bold; }
+        
+        .btn-pdf {
+            background-color: #da3633;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            border: 1px solid #b62324;
+        }
+        .btn-pdf:hover { opacity: 0.9; }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header style="padding: 10px 0; background: var(--card-bg); border-bottom: 1px solid var(--border);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../actividades.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">
+                <i class="fas fa-arrow-left"></i> Volver a Actividades
+            </a>
+            <span style="color: var(--text-muted); font-size: 0.9em;">CNO V - Seguridad Informática</span>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 40px;">
+        
+        <div class="header-actions">
+            <div>
+                <h1 style="margin-top: 10px; color: var(--accent);">Actividad 02: Análisis de Servicios de Seguridad</h1>
+            </div>
+            <a href="PDFs/act02-178318.pdf" target="_blank" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+
+        <div class="presentation-box">
+            <p><strong>Objetivo:</strong> Analizar escenarios de ciberataques para identificar los servicios de seguridad X.800 comprometidos, clasificarlos según el RFC 4949 y X.800. proponiendo sus definiciones</p>
+        </div>
+
+        <section>
+            <h2>Análisis de Escenarios (RFC 4949 & X.800)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">Escenario / Incidente</th>
+                            <th style="width: 15%;">Servicios X.800 Comprometidos</th>
+                            <th style="width: 15%;">Clasificación RFC 4949</th>
+                            <th style="width: 20%;">Vector de Ataque / Amenaza</th>
+                            <th style="width: 20%;">Medida de Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>01</strong></td>
+                            <td><strong>Ransomware LockBit:</strong> Cifrado masivo tras exfiltración y amenaza de publicación (Doble extorsión).</td>
+                            <td><span class="cell-danger">Confidencialidad</span><br>Integridad<br>Disponibilidad</td>
+                            <td>Multi-stage attack<br>Data breach<br>Availability attack</td>
+                            <td>Acceso inicial no autorizado (Explotación de vulns/credenciales).</td>
+                            <td>Autenticación, No repudio y Cifrado.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>02</strong></td>
+                            <td><strong>Exposición en Nube:</strong> Bases de datos públicas por error de configuración.</td>
+                            <td><span class="cell-danger">Confidencialidad</span><br>Control de Acceso</td>
+                            <td>Misconfiguration<br>Exposure</td>
+                            <td>Amenaza Interna (Error humano/configuración).</td>
+                            <td>Control de Acceso estricto y Cifrado.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>03</strong></td>
+                            <td><strong>Supply Chain Attack:</strong> Proveedor de software distribuye actualización con malware.</td>
+                            <td><span class="cell-danger">Integridad</span><br>Control de Acceso</td>
+                            <td>Supply chain attack</td>
+                            <td>Abuso de confianza (Software firmado legítimo).</td>
+                            <td>Verificación de integridad y detección de anomalías.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>04</strong></td>
+                            <td><strong>Phishing Persistente:</strong> Acceso prolongado con credenciales robadas sin levantar alertas.</td>
+                            <td>Autenticación<br>Control de Acceso</td>
+                            <td>Credential compromise<br>Auth failure</td>
+                            <td>Ingeniería social (Phishing) + Falta de MFA.</td>
+                            <td>Autenticación robusta (MFA) y No repudio.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>05</strong></td>
+                            <td><strong>Destrucción de Respaldos:</strong> Ransomware elimina backups antes de cifrar producción.</td>
+                            <td><span class="cell-danger">Disponibilidad</span><br>Integridad</td>
+                            <td>Data destruction<br>Availability attack</td>
+                            <td>Movimiento lateral para borrar recuperación.</td>
+                            <td>Respaldos inmutables/Offline y detección de intrusos (IDS).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>06</strong></td>
+                            <td><strong>Insider Threat:</strong> Empleado vende base de datos a terceros (abuso de privilegios).</td>
+                            <td><span class="cell-danger">Confidencialidad</span></td>
+                            <td>Insider threat</td>
+                            <td>Amenaza Interna (Exceso de privilegios).</td>
+                            <td>Principio de mínimo privilegio y monitoreo (DLP).</td>
+                        </tr>
+                        <tr>
+                            <td><strong>07</strong></td>
+                            <td><strong>Borrado de Logs:</strong> Cifrado de registros para impedir análisis forense.</td>
+                            <td>Integridad<br>No repudio</td>
+                            <td>Evidentiary integrity<br>Audit trail violation</td>
+                            <td>Acciones anti-forenses post-intrusión.</td>
+                            <td>Integridad de logs (Servidor Syslog remoto) y Cifrado.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>08</strong></td>
+                            <td><strong>Falla Operativa:</strong> Actualización fallida tira servicios globales (Sin atacante).</td>
+                            <td><span class="cell-danger">Disponibilidad</span></td>
+                            <td>Operational failure</td>
+                            <td>Error interno (Falta de pruebas QA).</td>
+                            <td>Gestión de cambios y pruebas en staging.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>09</strong></td>
+                            <td><strong>Sitios Falsos (Cloning):</strong> Réplica de portales oficiales para robo de datos.</td>
+                            <td>Autenticación<br>Confidencialidad</td>
+                            <td>Masquerade<br>Phishing</td>
+                            <td>Ingeniería social + Suplantación visual.</td>
+                            <td>Autenticación de dominio y concientización.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>10</strong></td>
+                            <td><strong>Ataque Destructivo (Wiper):</strong> Borrado total de sistemas sin intención de rescate.</td>
+                            <td><span class="cell-danger">CID (Total)</span></td>
+                            <td>Destructive attack</td>
+                            <td>Sabotaje puro (Ciberwarfare/Hacktivismo).</td>
+                            <td>Redundancia, ACLs estrictas y Cifrado.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>Conclusiones</h2>
+            <div class="presentation-box" style="background: var(--card-bg); border-color: var(--border);">
+                <p>El análisis de estos 10 escenarios bajo la óptica del <strong>RFC 4949</strong> y el estándar <strong>X.800</strong> revela que la seguridad no es unidimensional. Los ataques modernos rara vez comprometen un solo servicio; suelen ser cadenas de eventos (Multi-stage) que comienzan con fallas de autenticación o configuración y terminan afectando la triada completa (Confidencialidad, Integridad y Disponibilidad).</p>
+                <p>La implementación de controles debe ser proactiva y en capas (Defensa en Profundidad), priorizando la autenticación robusta y la integridad de los datos (respaldos y logs) como últimas líneas de defensa.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Referencias Bibliográficas</h2>
+            <ul style="color: var(--text-muted); font-size: 0.9em;">
+                <li>[1] Shirey, R. (2007). <em>RFC 4949 - Internet Security Glossary, Version 2</em>. IETF.</li>
+                <li>[2] ITU-T. (1991). <em>Recommendation X.800: Security architecture for Open Systems Interconnection</em>.</li>
+            </ul>
+        </section>
+
+        <footer>
+            <p>Portafolio Académico 2026 - Gustavo Michael Larios Guerra</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 03: Políticas en iptables</title>
+    <link rel="stylesheet" href="../Design/design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em; 
+            min-width: 800px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            vertical-align: top;
+        }
+        th {
+            background-color: #21262d;
+            color: var(--accent);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        p{
+          font-size: 20px;
+        }
+        tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+        .cell-highlight { color: var(--success); font-weight: bold; }
+        
+        .btn-pdf {
+            background-color: #da3633;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            border: 1px solid #b62324;
+        }
+        .btn-pdf:hover { opacity: 0.9; }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo extra para las preguntas del cuestionario */
+        .question-block {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            font-size: 18px;
+        }
+        .question-title { color: var(--accent); font-weight: bold; margin-bottom: 10px; display: block; }
+        .code-snippet {
+            background: #161b22;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            color: #e6edf3;
+            border: 1px solid var(--border);
+            display: block;
+            margin-top: 5px;
+            font-size: 18px;
+            
+        }        
+    </style>
+</head>
+<body>
+
+    <header style="padding: 10px 0; background: var(--card-bg); border-bottom: 1px solid var(--border);">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../actividades.html" style="color: var(--accent); text-decoration: none; font-weight: bold;">
+                <i class="fas fa-arrow-left"></i> Volver a Actividades
+            </a>
+            <span style="color: var(--text-muted); font-size: 0.9em;">CNO V - Seguridad Informática</span>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 40px;">
+        
+        <div class="header-actions">
+            <div>
+              
+                <h1 style="margin-top: 10px; color: var(--accent);">Actividad 03: Interpretación y traducción de politicas de filtrado de iptables.</h1>
+            </div>
+            <a target="_blank" href="PDFs/act03-178318.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+
+        <div class="presentation-box">
+            <p><strong>Objetivo:</strong> Análisis y configuración de reglas de firewall en Linux utilizando iptables. Comprensión del filtrado de paquetes, tablas (NAT, Mangle, Filter) y estados de conexión.</p>
+        </div>
+
+        <section>
+            <h2>Introducción</h2>
+            <p>iptables es una utilidad de espacio de usuario que permite al administrador del sistema configurar las reglas de filtrado de paquetes IP del firewall del kernel de Linux , implementadas como diferentes módulos de Netfilter. </p>
+        </section>
+
+            <div class="question-block">
+              <h2>1. Completa los espacios conforme se explica el flujo de paquetes</h2>
+                <p>Cuando un paquete llega al sistema, primero pasa por una <span class="cell-highlight"> TABLA </span>, después por una <span class="cell-highlight"> CADENA</span> y finalmente se ejecuta una <span class="cell-highlight"> REGLA </span>.</p>
+            </div>
+        
+
+        <section>
+            <h2>2.Relaciona la tabla con su propósito general.</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tabla</th>
+                            <th>Propósito Principal</th>
+                            <th>Ejemplo de Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>FILTER</strong></td>
+                            <td>Filtrar paquetes (Default)</td>
+                            <td>Bloquear puertos</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NAT</strong></td>
+                            <td>Traducción de direcciones</td>
+                            <td>Compartir internet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MANGLE</strong></td>
+                            <td>Modificar paquetes</td>
+                            <td>Cambiar cabeceras (TOS/TTL)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RAW</strong></td>
+                            <td>Excepción al seguimiento</td>
+                            <td>No inspeccionar (NOTRACK)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SECURITY</strong></td>
+                            <td>Políticas de seguridad (SELinux)</td>
+                            <td>Seguridad adicional</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>4. Este comando permite </h2>
+
+            <div class="question-block">
+                <code class="code-snippet">iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT</code>
+                <p style="margin-top: 10px;">Agrega una nueva regla en la tabla filter donde acepta el tráfico de http a https</p>
+            </div>
+
+            <div class="question-block">
+                <h2>5. Variables y Opciones Comunes</h2>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 8px;"><strong>a) Limitar intentos por minuto:</strong> <code class="code-snippet">--limit 5/minute</code> (Protección contra DoS/Flooding)</li>
+                    <li style="margin-bottom: 8px;"><strong>b) Filtrar IP de origen:</strong> <code class="code-snippet">-s 192.168.1.0/32</code> (Source IP)</li>
+                    <li style="margin-bottom: 8px;"><strong>c) ver solo numeros, sin DNS, (ni resolución de puertos):</strong> 
+                      <code  class="code-snippet">iptables -L -n</code> (Evita resolución DNS lenta)</li>
+                    <li><strong>d) Ver Reglas con contadores:</strong> 
+                      <code class="code-snippet">iptables -L -v</code> (Verbose: muestra paquetes/bytes)</li>
+                </ul>
+            </div>
+
+            <div class="question-block">
+                <!--span class="question-title">6. Regla con Estados (Stateful)</span-->
+                <h2>6. ¿Qué hace esta regla? </h2>
+                <code class="code-snippet">iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m state --state NEW,ESTABLISHED -j ACCEPT</code>
+                <p>Permite tráfico entrante por la interfaz <code>eth0</code> a los puertos SSH (22) y Web (80, 443), pero solo si la conexión es <strong>NUEVA</strong> o ya está <strong>ESTABLECIDA</strong>.</p>
+            </div>
+
+            <div class="question-block" style="border-bottom: none;">
+              
+                
+                <h2>7 Permitir Tráfico HTTP Entrante</h2>
+                <code class="code-snippet">iptables -A INPUT -p tcp --dport 80 -j ACCEPT</code>
+
+                <h2>8. Permitir Tráfico Saliente</h2>
+                <code class="code-snippet">iptables -A OUTPUT -j ACCEPT</code>
+
+                <h2>9. Permitir SSH solo desde la IP 192.168.1.50</h2>
+                <code class="code-snippet">iptables -A INPUT -p tcp --dport 22 -s 192.168.1.50 -j ACCEPT</code>
+
+                <h2>10. Permitir tráfico TCP entrante a purtos 80 y 443 solo si es conexión establecida o relacionada</h2>
+                <code class="code-snippet">iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m satate --state ESTABLESHED, RELATED -j ACCEPT</code>
+
+                <h2>11. Permitir tráfico TCP entrante por eth0 a 22, 80 y 443 registrar intento y permitir solo NEW y ESTABLESHED</h2>
+                <code class="code-snippet">iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m satate --state NEW, ESTABLESHES -j LOG --log -prefix "conexion Nueva: " -j ACCEPT</code>
+            </div>
+        </section>
+
+        <section>
+            <h2>Contenido para más información.</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/PeMBfZ7ummg?si=TUU3_PrtbfBm8aNA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          
+        </section>
+
+        <section>
+          <div>
+            <a style="color: beige; font-size: 20px;" href="https://fp.josedomingo.org/seguridadgs/u03/iptables.html" target="_blank">IPTABLES DESDE CERO</a>
+          </div>
+        </section>
+
+        <section>
+            <h2>Conclusión</h2>
+            <div class="presentation-box" style="background: var(--card-bg); border-color: var(--border);">
+                <p>Iptables es una herramienta poderosa en caso de saber usarla en su máximo conocimiento. 
+                  Personalmente batallé al principio para entender su función al momento de aplicarlos.
+                </p>
+            </div>
+        </section>
+
+        
+
+        <footer>
+            <p>Portafolio Académico 2026 - Gustavo Michael Larios Guerra</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
