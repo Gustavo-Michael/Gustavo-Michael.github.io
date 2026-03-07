@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 08: Inyección SQL (SQLi)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --card-bg: #161b22;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* BARRA DE NAVEGACIÓN SUPERIOR */
+        .top-bar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1100px; /* Más ancho para que quepan bien las tarjetas */
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra todo el contenido */
+        }
+
+        /* ENCABEZADOS */
+        h1 { color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 10px; text-align: center; width: 100%; }
+        
+        /* CAJA DE INFORMACIÓN GENERAL */
+        .info-box {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center; /* Texto centrado */
+        }
+
+        /* CUADRÍCULA DE LABORATORIOS (GRID CENTRADO) */
+        .labs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* TARJETAS DE LABORATORIO */
+        .lab-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .lab-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .lab-card h3 {
+            margin-top: 0;
+            color: #fff;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .lab-data { margin-bottom: 10px; font-size: 0.9em; }
+        .lab-data strong { color: var(--accent); }
+
+        /* BADGES DE NIVELES */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .badge-apprentice { background: rgba(35, 134, 54, 0.2); color: #7ee787; border: 1px solid #238636; }
+        .badge-practitioner { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
+        .badge-expert { background: rgba(218, 54, 51, 0.2); color: #ff7b72; border: 1px solid var(--danger); }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            width: 100%;
+        }
+
+        .btn-pdf {
+            background-color: var(--danger); /* Rojo para PDF */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s;
+            border: 1px solid #da3633;
+
+            margin-bottom: 10%;
+            margin-left: auto;
+        }
+        .btn-pdf:hover { opacity: 0.8; }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Portafolio</a>
+        <span>CNO V - Seguridad Informática</span>
+    </div>
+
+    <div class="container">
+
+         <div class="header-actions">
+            <div>
+                <h1 style="margin-top: 10px; color: var(--accent);">Road to Hall of the Fame: SQLi</h1>
+            </div>
+            <a href="PDFs/act08-Equipo3.pdf" target="_blank" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+                       
+        <div class="info-box">
+            <p><strong>Autor:</strong> Equipo 3</p>
+            <p><strong>Descripción:</strong> Resolución de 18 laboratorios prácticos de la academia <em>PortSwigger</em> enfocados en descubrir, analizar y explotar vulnerabilidades de <strong>Inyección SQL (SQLi)</strong> en diferentes entornos y niveles de dificultad.</p>
+        </div>
+
+        <div class="labs-grid">
+            
+            <div class="lab-card">
+                <h3>Laboratorio 1</h3>
+                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band (Cláusula WHERE)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Realizar un ataque que evada el filtro y muestre todos los productos (lanzados y no lanzados).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> en el filtro de productos no está sanitizado.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 2</h3>
+                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band (Login Bypass)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Iniciar sesión en la aplicación evadiendo la autenticación.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El campo <code>username</code> del formulario de inicio de sesión permite alterar la consulta lógica.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 3</h3>
+                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Determinar el número exacto de columnas devueltas por la consulta original.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> permite inyectar cláusulas UNION comprobando errores.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 4</h3>
+                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Encontrar una columna con tipo de dato de texto y devolver una cadena específica.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Inyección en <code>category</code> que permite enumerar el tipo de dato de cada columna.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 5</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer los nombres de usuario y contraseñas de la base de datos e iniciar sesión.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> permite extraer datos de otras tablas (ej. `users`).</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 6</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based (Concatenación)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer credenciales combinadas en una sola columna.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Solo una columna devuelve texto, obligando al atacante a concatenar usuario y contraseña.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 7</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Mostrar la versión y tipo de la base de datos (Oracle).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Inyección en <code>category</code> consultando las tablas del sistema integradas (`v$version`).</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 8</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Mostrar la versión de la base de datos (MySQL / Microsoft).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Permite el uso de <code>@@version</code> para extraer metadatos.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 9</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Listar todas las tablas y extraer contraseñas en DBs No-Oracle.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Consulta maliciosa al <code>information_schema.tables</code>.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 10</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Listar todas las tablas y extraer contraseñas (Oracle).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Consulta maliciosa a tablas internas de Oracle (<code>all_tables</code>).</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 11</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Boolean-based)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña del administrador basado en respuestas verdaderas/falsas.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie <code>TrackingId</code> responde de forma distinta si la consulta es True o False.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 12</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Error-based)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer contraseña provocando errores condicionales (ej. división por cero).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El servidor arroja Error 500 basado en el valor de la cookie <code>TrackingId</code>.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 13</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Time-based)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Confirmar vulnerabilidad provocando un retraso de 10 segundos.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie <code>TrackingId</code> ejecuta comandos de tiempo (<code>pg_sleep</code>).</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 14</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Time-based Data Retrieval)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña midiendo el tiempo de respuesta del servidor.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Retardos condicionales en la cookie <code>TrackingId</code>.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 15</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Out-of-band (OAST)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Provocar una búsqueda DNS a un dominio externo (Burp Collaborator).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie permite interacción externa a través de la red de la base de datos.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 16</h3>
+                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Out-of-band (Data Exfiltration)</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña enviándola como subdominio en una solicitud DNS.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Exfiltración mediante DNS usando la cookie <code>TrackingId</code>.</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 17</h3>
+                <div style="text-align: center;"><span class="badge badge-expert">Expert</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> SQLi vía XML</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Evadir el WAF (Web Application Firewall) para extraer datos.</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El backend procesa entidades XML sin sanitizar (XXE to SQLi).</div>
+            </div>
+
+            <div class="lab-card">
+                <h3>Laboratorio 18</h3>
+                <div style="text-align: center;"><span class="badge badge-expert">Expert</span></div>
+                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> SQLi Avanzada</div>
+                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Explotar vectores complejos (ej. parámetros ORDER BY u OAST avanzado).</div>
+                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Falta de parametrización en puntos no convencionales de la aplicación.</div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Reporte de Laboratorios: Análisis de Vulnerabilidades</p>
+            <p>© 2026 Portafolio de Evidencias | Seguridad Informática</p>
+        </footer>
+    </div>
+
+</body>
+</html>
