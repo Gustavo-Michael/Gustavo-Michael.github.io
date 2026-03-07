@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 02: Simulación de Phishing</title>
+    <link rel="stylesheet" href="../../Design/design.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --success: #238636;
+            --warning: #d29922;
+            --card-bg: #161b22;
+            --border: #30363d;
+            --table-header: #21262d;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* BARRA DE NAVEGACIÓN SUPERIOR */
+        .top-bar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* ENCABEZADOS */
+        h1, h2, h3 { color: var(--accent); }
+        h1 { border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        h2 { margin-top: 50px; border-left: 4px solid var(--accent); padding-left: 10px; }
+        
+        /* CAJAS DE TEXTO */
+        .info-box {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        /* CONTENEDOR DE PLATAFORMAS (AHORA CENTRADO) */
+        .platform-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra las tarjetas en la pantalla */
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        /* TARJETAS DE PLATAFORMAS (ANCHO LIMITADO PARA LECTURA) */
+        .platform-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px; /* Más espacio interno para que respire el texto */
+            border-radius: 8px;
+            width: 100%;
+            max-width: 750px; /* Este límite hace que la lectura no canse la vista */
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+        }
+        
+        .platform-card h3 {
+            margin-top: 0;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            text-align: center; /* El título de cada herramienta ahora está centrado */
+            font-size: 1.4em;
+        }
+
+        /* TABLAS */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+            min-width: 600px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            vertical-align: top;
+        }
+        th {
+            background-color: var(--table-header);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        tr:hover { background-color: rgba(88, 166, 255, 0.05); }
+
+        /* BADGES Y LISTAS */
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .badge-green { background: rgba(35, 134, 54, 0.2); color: #7ee787; border: 1px solid #238636; }
+        .badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
+        
+        ul.custom-list { list-style: none; padding-left: 0; margin-bottom: 0; }
+        ul.custom-list li { margin-bottom: 12px; padding-left: 20px; position: relative; }
+        ul.custom-list li:last-child { margin-bottom: 0; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+
+         /* Botón de descarga de PDF */
+        .btn-pdf {
+            background-color: var(--danger); /* Rojo para PDF */
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s;
+            border: 1px solid #da3633;
+            margin-bottom: 5%;
+        }
+        .btn-pdf:hover { opacity: 0.8; }
+        
+
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Portafolio</a>
+        <span>CNO V - Seguridad Informática</span>
+    </div>
+
+    <div class="container">
+
+        <div class="header-actions">
+            <div>
+                <h1 style="margin-top: 10px; color: var(--accent);">Actividad 01: Análisis Colonial Pipeline</h1>
+            </div>
+            <a href="../PDFs/PR02-178318.pdf" target="_blank" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+
+        <header>
+            <h1>PR02: El eslabón más débil: diseño ético de una campaña de ingeniería social</h1>
+            
+            <div class="info-box">
+                <p><strong>Tema:</strong> Investigación y simulación educativa de Phishing.</p>
+                <p><strong>Objetivos:</strong> Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas profesionales del mercado, con el propósito de medir el nivel de reconocimiento de amenazas de ingeniería social en usuarios, interpretar los resultados mediante un sistema de puntuación global y reflexionar sobre la gestión responsable del riesgo humano en seguridad informática.</p>
+            </div>
+        </header>
+
+        <section>
+            <h2>1. Investigación de Plataformas del Mercado</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">Análisis de las principales soluciones empresariales para concientización y simulación de phishing.</p>
+
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <h3><i class="fas fa-crosshairs"></i> 1. Hoxhunt</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Se basa en la gamificación extrema. Envía simulaciones adaptativas directamente a la bandeja de entrada. Si el usuario reporta el correo, gana puntos y sube en un ranking.</li>
+                        <li><strong>Enfoque Ético:</strong> Prioriza el refuerzo positivo sobre el castigo por hacer clic. Sus micro-aprendizajes duran menos de 1 minuto.</li>
+                        <li><strong>Diferenciador:</strong> Utiliza IA Adaptativa para ajustar la dificultad individualmente.</li>
+                        <li><strong>Métrica Clave:</strong> Dwell Time (Tiempo de permanencia hasta que el usuario reporta).</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-shield-virus"></i> 2. Proofpoint</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Integración con su sistema de protección de correo (TAP). Utiliza ataques reales interceptados para crear plantillas.</li>
+                        <li><strong>Enfoque Ético:</strong> Se centra en la identificación de VAPs (Very Attacked People) para no saturar a toda la plantilla.</li>
+                        <li><strong>Diferenciador:</strong> Convierte ataques reales bloqueados en plantillas de simulación en minutos. Identifica automáticamente a los empleados objetivo.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-brain"></i> 3. KnowBe4</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Es el gigante del mercado con la biblioteca de contenido más grande. Su IA (AIDA) personaliza los escenarios según el historial.</li>
+                        <li><strong>Enfoque Ético:</strong> Utiliza el "Phish-prone %" (porcentaje de propensión al phishing) para mejora continua.</li>
+                        <li><strong>Diferenciador:</strong> Smart Groups permite automatizar grupos basados en criterios complejos de comportamiento.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-users"></i> 4. Cofense</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Fomenta la creación de una red de sensores humanos. El botón "Cofense Reporter" es el eje central para borrar correos maliciosos masivamente.</li>
+                        <li><strong>Enfoque Ético:</strong> El usuario no es una víctima, es un "analista de primera línea".</li>
+                        <li><strong>Diferenciador:</strong> Triage: Ayuda al SOC a analizar y eliminar el correo de todas las bandejas instantáneamente.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-robot"></i> 5. Phished</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Plataforma 100% automatizada mediante IA. Lanza ataques de spear phishing personalizados automáticamente estudiando el perfil público.</li>
+                        <li><strong>Diferenciador:</strong> Phished Assistant actúa como un "coach" de IA en tiempo real.</li>
+                        <li><strong>Métrica:</strong> Behavioral Risk Score™ (puntaje de riesgo conductual).</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-video"></i> 6. NINJIO</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Contenido en vídeos estilo anime/cómic de 3 minutos, basados en ataques reales recientes. El storytelling es su arma principal.</li>
+                        <li><strong>Enfoque Psicológico:</strong> Identifica si un usuario es más susceptible a la Urgencia, Autoridad o Curiosidad.</li>
+                    </ul>
+                </div>
+                
+                <div class="platform-card">
+                    <h3><i class="fas fa-layer-group"></i> 7. Mimecast & 8. Infosec IQ</h3>
+                    <ul class="custom-list">
+                        <li><strong>Mimecast:</strong> Usa el humor para mantener el compromiso. Incluye encuestas de sentimiento del usuario. Utiliza Predictive Risk Scoring.</li>
+                        <li><strong>Infosec IQ:</strong> Más de 2,000 recursos de formación. Simulaciones de smishing (SMS) y vishing (voz). Especializado en aprendizaje just-on-time.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Tabla Comparativa</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Capacidades Técnicas</th>
+                            <th>Enfoque / Métricas</th>
+                            <th>Controles Éticos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Hoxhunt</strong></td>
+                            <td>IA Adaptativa, entrega asíncrona.</td>
+                            <td>Gamificación, Dwell Time.</td>
+                            <td>Refuerzo positivo; prohíbe señuelos "creepy".</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Proofpoint</strong></td>
+                            <td>Integración TAP; simulaciones de ataques reales.</td>
+                            <td>Identificación de VAPs.</td>
+                            <td>Entrenamiento dirigido para evitar fatiga.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>KnowBe4</strong></td>
+                            <td>IA AIDA; SecurityCoach.</td>
+                            <td>Phish-prone % y Smart Groups.</td>
+                            <td>Uso de "Teachable Moments".</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cofense</strong></td>
+                            <td>Foco en botón de reporte; triaje en el SOC.</td>
+                            <td>Eficiencia del "Sensor Humano".</td>
+                            <td>Empoderamiento; Human-in-the-loop.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phished</strong></td>
+                            <td>Zero-Touch; OSINT automático.</td>
+                            <td>Behavioral Risk Score™.</td>
+                            <td>Rutas dinámicas; evita sobre-entrenamiento.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NINJIO</strong></td>
+                            <td>Storytelling estilo anime.</td>
+                            <td>Conexión emocional y NPS.</td>
+                            <td>Basado en empatía; evita estrés.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mimecast</strong></td>
+                            <td>Protección unificada.</td>
+                            <td>Costo financiero del riesgo.</td>
+                            <td>Monitoreo de sentimiento del usuario.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infosec IQ</strong></td>
+                            <td>Multi-vector (Smishing, Vishing).</td>
+                            <td>Tasa de entrega y tiempo de reporte.</td>
+                            <td>Aprendizaje Just-on-time; exclusión de traumas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Consideraciones y Alternativas Open Source</h2>
+            <p>La mayoría de las plataformas mencionadas son empresariales (SaaS) y cobran por usuario al mes. Sin embargo, existen alternativas para entornos académicos y de pruebas técnicas:</p>
+
+            <div class="info-box" style="border-color: var(--warning);">
+                <h3 style="color: var(--warning); margin-top: 0;"><i class="fas fa-tools"></i> Herramientas Gratuitas</h3>
+                <ul class="custom-list">
+                    <li><strong>Gophish:</strong> Es el estándar de la industria para código abierto. Permite control total de los datos y el diseño, ideal para aprender la parte técnica.</li>
+                    <li><strong>King Phisher:</strong> Utilizada frecuentemente por "Red Teams" para pruebas de penetración. Requiere más conocimientos técnicos de instalación.</li>
+                    <li><strong>CanIPhish:</strong> Plataforma SaaS con un "Tier gratuito perpetuo" que permite envíos limitados, perfecto para ejercicios pequeños.</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            <p><strong>Referencias:</strong> Hoxhunt, ProofPoint, KnowBe4, Cofense, Ninjio, Mimecast, Infosec IQ.</p>
+            <p>Investigación realizada para la materia de Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
