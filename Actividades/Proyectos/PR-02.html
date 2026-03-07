@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividad 08: Inyección SQL (SQLi)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Actividad 02: Simulación de Phishing</title>
+    <link rel="stylesheet" href="../../Design/design.css">
     <style>
         :root {
             --bg-color: #0d1117;
@@ -13,9 +13,9 @@
             --accent: #58a6ff;
             --success: #238636;
             --warning: #d29922;
-            --danger: #da3633;
             --card-bg: #161b22;
             --border: #30363d;
+            --table-header: #21262d;
         }
 
         body {
@@ -51,77 +51,98 @@
 
         /* CONTENEDOR PRINCIPAL */
         .container {
-            max-width: 1100px; /* Más ancho para que quepan bien las tarjetas */
+            max-width: 950px;
             margin: 40px auto;
             padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* Centra todo el contenido */
         }
 
         /* ENCABEZADOS */
-        h1 { color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 10px; text-align: center; width: 100%; }
+        h1, h2, h3 { color: var(--accent); }
+        h1 { border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        h2 { margin-top: 50px; border-left: 4px solid var(--accent); padding-left: 10px; }
         
-        /* CAJA DE INFORMACIÓN GENERAL */
+        /* CAJAS DE TEXTO */
         .info-box {
             background: rgba(88, 166, 255, 0.1);
             border: 1px solid var(--border);
-            padding: 20px;
+            padding: 15px;
             border-radius: 6px;
-            margin-bottom: 40px;
-            width: 100%;
-            max-width: 800px;
-            text-align: center; /* Texto centrado */
+            margin-bottom: 20px;
+        }
+        
+        /* CONTENEDOR DE PLATAFORMAS (AHORA CENTRADO) */
+        .platform-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra las tarjetas en la pantalla */
+            gap: 25px;
+            margin-top: 30px;
         }
 
-        /* CUADRÍCULA DE LABORATORIOS (GRID CENTRADO) */
-        .labs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            width: 100%;
-            justify-content: center;
-        }
-
-        /* TARJETAS DE LABORATORIO */
-        .lab-card {
+        /* TARJETAS DE PLATAFORMAS (ANCHO LIMITADO PARA LECTURA) */
+        .platform-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 20px;
+            padding: 30px; /* Más espacio interno para que respire el texto */
             border-radius: 8px;
-            transition: transform 0.2s, border-color 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 750px; /* Este límite hace que la lectura no canse la vista */
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
         }
-        .lab-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-        }
-
-        .lab-card h3 {
+        
+        .platform-card h3 {
             margin-top: 0;
-            color: #fff;
+            color: var(--accent);
             border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            text-align: center;
-            font-size: 1.2em;
+            padding-bottom: 15px;
+            text-align: center; /* El título de cada herramienta ahora está centrado */
+            font-size: 1.4em;
         }
 
-        .lab-data { margin-bottom: 10px; font-size: 0.9em; }
-        .lab-data strong { color: var(--accent); }
+        /* TABLAS */
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+            min-width: 600px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            vertical-align: top;
+        }
+        th {
+            background-color: var(--table-header);
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        tr:hover { background-color: rgba(88, 166, 255, 0.05); }
 
-        /* BADGES DE NIVELES */
+        /* BADGES Y LISTAS */
         .badge {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
             font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
         }
-        .badge-apprentice { background: rgba(35, 134, 54, 0.2); color: #7ee787; border: 1px solid #238636; }
-        .badge-practitioner { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
-        .badge-expert { background: rgba(218, 54, 51, 0.2); color: #ff7b72; border: 1px solid var(--danger); }
+        .badge-green { background: rgba(35, 134, 54, 0.2); color: #7ee787; border: 1px solid #238636; }
+        .badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
+        
+        ul.custom-list { list-style: none; padding-left: 0; margin-bottom: 0; }
+        ul.custom-list li { margin-bottom: 12px; padding-left: 20px; position: relative; }
+        ul.custom-list li:last-child { margin-bottom: 0; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
 
         footer {
             margin-top: 60px;
@@ -130,9 +151,9 @@
             text-align: center;
             font-size: 0.8em;
             color: var(--text-muted);
-            width: 100%;
         }
 
+         /* Botón de descarga de PDF */
         .btn-pdf {
             background-color: var(--danger); /* Rojo para PDF */
             color: white;
@@ -145,11 +166,10 @@
             gap: 8px;
             transition: opacity 0.3s;
             border: 1px solid #da3633;
-
-            margin-bottom: 10%;
-            margin-left: auto;
+            margin-bottom: 5%;
         }
         .btn-pdf:hover { opacity: 0.8; }
+        
 
     </style>
 </head>
@@ -162,171 +182,176 @@
 
     <div class="container">
 
-         <div class="header-actions">
+        <div class="header-actions">
             <div>
-                <h1 style="margin-top: 10px; color: var(--accent);">Road to Hall of the Fame: SQLi</h1>
+                <h1 style="margin-top: 10px; color: var(--accent);">PR02: El Eslabón más Débil: Diseño Ético de una Campaña de Ingeniería Social</h1>
             </div>
-            <a href="PDFs/act08-Equipo3.pdf" target="_blank" class="btn-pdf" download>
+            <a href="../PDFs/PR02-178318.pdf" target="_blank" class="btn-pdf" download>
                 <i class="fas fa-file-pdf"></i> Descargar PDF
             </a>
         </div>
-                       
-        <div class="info-box">
-            <p><strong>Autor:</strong> Equipo 3</p>
-            <p><strong>Descripción:</strong> Resolución de 18 laboratorios prácticos de la academia <em>PortSwigger</em> enfocados en descubrir, analizar y explotar vulnerabilidades de <strong>Inyección SQL (SQLi)</strong> en diferentes entornos y niveles de dificultad.</p>
-        </div>
 
-        <div class="labs-grid">
+        <header>
             
-            <div class="lab-card">
-                <h3>Laboratorio 1</h3>
-                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band (Cláusula WHERE)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Realizar un ataque que evada el filtro y muestre todos los productos (lanzados y no lanzados).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> en el filtro de productos no está sanitizado.</div>
+            <div class="info-box">
+                <p><strong>Tema:</strong> Investigación y simulación educativa de Phishing.</p>
+                <p><strong>Objetivos:</strong> Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas profesionales del mercado, con el propósito de medir el nivel de reconocimiento de amenazas de ingeniería social en usuarios, interpretar los resultados mediante un sistema de puntuación global y reflexionar sobre la gestión responsable del riesgo humano en seguridad informática.</p>
             </div>
+        </header>
 
-            <div class="lab-card">
-                <h3>Laboratorio 2</h3>
-                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band (Login Bypass)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Iniciar sesión en la aplicación evadiendo la autenticación.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El campo <code>username</code> del formulario de inicio de sesión permite alterar la consulta lógica.</div>
+        <section>
+            <h2>1. Investigación de Plataformas del Mercado</h2>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">Análisis de las principales soluciones empresariales para concientización y simulación de phishing.</p>
+
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <h3><i class="fas fa-crosshairs"></i> 1. Hoxhunt</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Se basa en la gamificación extrema. Envía simulaciones adaptativas directamente a la bandeja de entrada. Si el usuario reporta el correo, gana puntos y sube en un ranking.</li>
+                        <li><strong>Enfoque Ético:</strong> Prioriza el refuerzo positivo sobre el castigo por hacer clic. Sus micro-aprendizajes duran menos de 1 minuto.</li>
+                        <li><strong>Diferenciador:</strong> Utiliza IA Adaptativa para ajustar la dificultad individualmente.</li>
+                        <li><strong>Métrica Clave:</strong> Dwell Time (Tiempo de permanencia hasta que el usuario reporta).</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-shield-virus"></i> 2. Proofpoint</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Integración con su sistema de protección de correo (TAP). Utiliza ataques reales interceptados para crear plantillas.</li>
+                        <li><strong>Enfoque Ético:</strong> Se centra en la identificación de VAPs (Very Attacked People) para no saturar a toda la plantilla.</li>
+                        <li><strong>Diferenciador:</strong> Convierte ataques reales bloqueados en plantillas de simulación en minutos. Identifica automáticamente a los empleados objetivo.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-brain"></i> 3. KnowBe4</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Es el gigante del mercado con la biblioteca de contenido más grande. Su IA (AIDA) personaliza los escenarios según el historial.</li>
+                        <li><strong>Enfoque Ético:</strong> Utiliza el "Phish-prone %" (porcentaje de propensión al phishing) para mejora continua.</li>
+                        <li><strong>Diferenciador:</strong> Smart Groups permite automatizar grupos basados en criterios complejos de comportamiento.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-users"></i> 4. Cofense</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Fomenta la creación de una red de sensores humanos. El botón "Cofense Reporter" es el eje central para borrar correos maliciosos masivamente.</li>
+                        <li><strong>Enfoque Ético:</strong> El usuario no es una víctima, es un "analista de primera línea".</li>
+                        <li><strong>Diferenciador:</strong> Triage: Ayuda al SOC a analizar y eliminar el correo de todas las bandejas instantáneamente.</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-robot"></i> 5. Phished</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Plataforma 100% automatizada mediante IA. Lanza ataques de spear phishing personalizados automáticamente estudiando el perfil público.</li>
+                        <li><strong>Diferenciador:</strong> Phished Assistant actúa como un "coach" de IA en tiempo real.</li>
+                        <li><strong>Métrica:</strong> Behavioral Risk Score™ (puntaje de riesgo conductual).</li>
+                    </ul>
+                </div>
+
+                <div class="platform-card">
+                    <h3><i class="fas fa-video"></i> 6. NINJIO</h3>
+                    <ul class="custom-list">
+                        <li><strong>Características:</strong> Contenido en vídeos estilo anime/cómic de 3 minutos, basados en ataques reales recientes. El storytelling es su arma principal.</li>
+                        <li><strong>Enfoque Psicológico:</strong> Identifica si un usuario es más susceptible a la Urgencia, Autoridad o Curiosidad.</li>
+                    </ul>
+                </div>
+                
+                <div class="platform-card">
+                    <h3><i class="fas fa-layer-group"></i> 7. Mimecast & 8. Infosec IQ</h3>
+                    <ul class="custom-list">
+                        <li><strong>Mimecast:</strong> Usa el humor para mantener el compromiso. Incluye encuestas de sentimiento del usuario. Utiliza Predictive Risk Scoring.</li>
+                        <li><strong>Infosec IQ:</strong> Más de 2,000 recursos de formación. Simulaciones de smishing (SMS) y vishing (voz). Especializado en aprendizaje just-on-time.</li>
+                    </ul>
+                </div>
             </div>
+        </section>
 
-            <div class="lab-card">
-                <h3>Laboratorio 3</h3>
-                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Determinar el número exacto de columnas devueltas por la consulta original.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> permite inyectar cláusulas UNION comprobando errores.</div>
+        <section>
+            <h2>2. Tabla Comparativa</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Plataforma</th>
+                            <th>Capacidades Técnicas</th>
+                            <th>Enfoque / Métricas</th>
+                            <th>Controles Éticos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Hoxhunt</strong></td>
+                            <td>IA Adaptativa, entrega asíncrona.</td>
+                            <td>Gamificación, Dwell Time.</td>
+                            <td>Refuerzo positivo; prohíbe señuelos "creepy".</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Proofpoint</strong></td>
+                            <td>Integración TAP; simulaciones de ataques reales.</td>
+                            <td>Identificación de VAPs.</td>
+                            <td>Entrenamiento dirigido para evitar fatiga.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>KnowBe4</strong></td>
+                            <td>IA AIDA; SecurityCoach.</td>
+                            <td>Phish-prone % y Smart Groups.</td>
+                            <td>Uso de "Teachable Moments".</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cofense</strong></td>
+                            <td>Foco en botón de reporte; triaje en el SOC.</td>
+                            <td>Eficiencia del "Sensor Humano".</td>
+                            <td>Empoderamiento; Human-in-the-loop.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phished</strong></td>
+                            <td>Zero-Touch; OSINT automático.</td>
+                            <td>Behavioral Risk Score™.</td>
+                            <td>Rutas dinámicas; evita sobre-entrenamiento.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NINJIO</strong></td>
+                            <td>Storytelling estilo anime.</td>
+                            <td>Conexión emocional y NPS.</td>
+                            <td>Basado en empatía; evita estrés.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mimecast</strong></td>
+                            <td>Protección unificada.</td>
+                            <td>Costo financiero del riesgo.</td>
+                            <td>Monitoreo de sentimiento del usuario.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infosec IQ</strong></td>
+                            <td>Multi-vector (Smishing, Vishing).</td>
+                            <td>Tasa de entrega y tiempo de reporte.</td>
+                            <td>Aprendizaje Just-on-time; exclusión de traumas.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </section>
 
-            <div class="lab-card">
-                <h3>Laboratorio 4</h3>
-                <div style="text-align: center;"><span class="badge badge-apprentice">Apprentice</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Encontrar una columna con tipo de dato de texto y devolver una cadena específica.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Inyección en <code>category</code> que permite enumerar el tipo de dato de cada columna.</div>
+        <section>
+            <h2>3. Consideraciones y Alternativas Open Source</h2>
+            <p>La mayoría de las plataformas mencionadas son empresariales (SaaS) y cobran por usuario al mes. Sin embargo, existen alternativas para entornos académicos y de pruebas técnicas:</p>
+
+            <div class="info-box" style="border-color: var(--warning);">
+                <h3 style="color: var(--warning); margin-top: 0;"><i class="fas fa-tools"></i> Herramientas Gratuitas</h3>
+                <ul class="custom-list">
+                    <li><strong>Gophish:</strong> Es el estándar de la industria para código abierto. Permite control total de los datos y el diseño, ideal para aprender la parte técnica.</li>
+                    <li><strong>King Phisher:</strong> Utilizada frecuentemente por "Red Teams" para pruebas de penetración. Requiere más conocimientos técnicos de instalación.</li>
+                    <li><strong>CanIPhish:</strong> Plataforma SaaS con un "Tier gratuito perpetuo" que permite envíos limitados, perfecto para ejercicios pequeños.</li>
+                </ul>
             </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 5</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer los nombres de usuario y contraseñas de la base de datos e iniciar sesión.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El parámetro <code>category</code> permite extraer datos de otras tablas (ej. `users`).</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 6</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based (Concatenación)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer credenciales combinadas en una sola columna.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Solo una columna devuelve texto, obligando al atacante a concatenar usuario y contraseña.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 7</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Mostrar la versión y tipo de la base de datos (Oracle).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Inyección en <code>category</code> consultando las tablas del sistema integradas (`v$version`).</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 8</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> In-band</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Mostrar la versión de la base de datos (MySQL / Microsoft).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Permite el uso de <code>@@version</code> para extraer metadatos.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 9</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Listar todas las tablas y extraer contraseñas en DBs No-Oracle.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Consulta maliciosa al <code>information_schema.tables</code>.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 10</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> UNION-based</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Listar todas las tablas y extraer contraseñas (Oracle).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Consulta maliciosa a tablas internas de Oracle (<code>all_tables</code>).</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 11</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Boolean-based)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña del administrador basado en respuestas verdaderas/falsas.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie <code>TrackingId</code> responde de forma distinta si la consulta es True o False.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 12</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Error-based)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer contraseña provocando errores condicionales (ej. división por cero).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El servidor arroja Error 500 basado en el valor de la cookie <code>TrackingId</code>.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 13</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Time-based)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Confirmar vulnerabilidad provocando un retraso de 10 segundos.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie <code>TrackingId</code> ejecuta comandos de tiempo (<code>pg_sleep</code>).</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 14</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Blind SQLi (Time-based Data Retrieval)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña midiendo el tiempo de respuesta del servidor.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Retardos condicionales en la cookie <code>TrackingId</code>.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 15</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Out-of-band (OAST)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Provocar una búsqueda DNS a un dominio externo (Burp Collaborator).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> La cookie permite interacción externa a través de la red de la base de datos.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 16</h3>
-                <div style="text-align: center;"><span class="badge badge-practitioner">Practitioner</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> Out-of-band (Data Exfiltration)</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Extraer la contraseña enviándola como subdominio en una solicitud DNS.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Exfiltración mediante DNS usando la cookie <code>TrackingId</code>.</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 17</h3>
-                <div style="text-align: center;"><span class="badge badge-expert">Expert</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> SQLi vía XML</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Evadir el WAF (Web Application Firewall) para extraer datos.</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> El backend procesa entidades XML sin sanitizar (XXE to SQLi).</div>
-            </div>
-
-            <div class="lab-card">
-                <h3>Laboratorio 18</h3>
-                <div style="text-align: center;"><span class="badge badge-expert">Expert</span></div>
-                <div class="lab-data"><strong><i class="fas fa-code"></i> Tipo SQLi:</strong> SQLi Avanzada</div>
-                <div class="lab-data"><strong><i class="fas fa-bullseye"></i> Objetivo:</strong> Explotar vectores complejos (ej. parámetros ORDER BY u OAST avanzado).</div>
-                <div class="lab-data"><strong><i class="fas fa-bug"></i> Vulnerabilidad:</strong> Falta de parametrización en puntos no convencionales de la aplicación.</div>
-            </div>
-
-        </div>
+        </section>
 
         <footer>
-            <p>Reporte de Laboratorios: Análisis de Vulnerabilidades</p>
-            <p>© 2026 Portafolio de Evidencias | Seguridad Informática</p>
+            <p><strong>Referencias:</strong> Hoxhunt, ProofPoint, KnowBe4, Cofense, Ninjio, Mimecast, Infosec IQ.</p>
+            <p>Investigación realizada para la materia de Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
         </footer>
     </div>
 
