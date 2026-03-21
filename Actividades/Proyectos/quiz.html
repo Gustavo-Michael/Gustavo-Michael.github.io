@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Phishing - PR02</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --accent: #58a6ff;
+            --success: #238636;
+            --danger: #da3633;
+            --warning: #d29922;
+            --card-bg: #161b22;
+            --email-bg: #ffffff;
+            --email-text: #333333;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+
+        /* HEADER Y PROGRESO */
+        header {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--card-bg);
+            box-sizing: border-box;
+        }
+        h1 { color: var(--accent); margin: 0 0 10px 0; }
+        
+        .progress-container {
+            width: 80%;
+            max-width: 600px;
+            background-color: var(--border);
+            border-radius: 10px;
+            margin: 0 auto;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        #app-container { width: 90%; max-width: 800px; margin: 40px auto; position: relative; }
+
+        /* MOCKUP CORREO */
+        .email-mockup {
+            background-color: var(--email-bg); color: var(--email-text);
+            border-radius: 8px; overflow: hidden; font-family: Arial, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none;
+        }
+        .email-mockup.active { display: block; animation: slideIn 0.4s ease-out; }
+        .email-header { background-color: #f3f3f3; padding: 15px; border-bottom: 1px solid #ddd; }
+        .email-header p { margin: 5px 0; font-size: 0.9em; }
+        .email-header strong { color: #555; }
+        .email-body { padding: 25px; font-size: 1.05em; line-height: 1.5; }
+        
+        /* BOTONES */
+        .action-buttons { display: none; justify-content: center; gap: 20px; margin-top: 30px; }
+        .action-buttons.active { display: flex; }
+        .btn {
+            padding: 15px 30px; font-size: 1.1em; font-weight: bold; border: none;
+            border-radius: 6px; cursor: pointer; transition: transform 0.1s, opacity 0.2s; font-family: inherit;
+        }
+        .btn:hover { opacity: 0.9; transform: scale(1.05); }
+        .btn-phishing { background-color: var(--danger); color: white; }
+        .btn-legit { background-color: var(--success); color: white; }
+
+        /* MODAL DE FEEDBACK */
+        .feedback-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 17, 23, 0.95); display: none; flex-direction: column;
+            justify-content: center; align-items: center; border-radius: 8px;
+            text-align: center; padding: 30px; box-sizing: border-box; z-index: 10;
+        }
+        .feedback-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .feedback-icon { font-size: 4em; margin-bottom: 15px; }
+        .feedback-correct { color: var(--success); }
+        .feedback-incorrect { color: var(--danger); }
+        .btn-next { margin-top: 20px; background-color: var(--accent); color: black; padding: 10px 20px; }
+
+        /* PANTALLA FINAL Y LEADERBOARD */
+        #results-screen { display: none; text-align: center; }
+        #results-screen.active { display: block; }
+        .score-circle {
+            width: 150px; height: 150px; border: 5px solid var(--accent); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 3em;
+            margin: 0 auto 10px; font-weight: bold; color: var(--accent);
+        }
+        
+        .timer-result { color: var(--warning); font-size: 1.1em; margin-bottom: 20px; font-weight: bold; }
+        
+        .mistakes-list { text-align: left; background: var(--card-bg); padding: 20px; border-radius: 6px; margin-top: 20px;}
+        .mistakes-list li { margin-bottom: 10px; color: #ff7b72; }
+
+        .save-section { margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
+        .name-input {
+            padding: 10px; border-radius: 4px; border: 1px solid var(--accent);
+            background: var(--bg-color); color: var(--text-main); font-family: inherit; width: 200px;
+        }
+        .leaderboard-table { width: 100%; max-width: 600px; margin: 30px auto; border-collapse: collapse; }
+        .leaderboard-table th, .leaderboard-table td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
+        .leaderboard-table th { color: var(--accent); background-color: var(--card-bg); }
+        .rank-1 { color: #ffd700; font-weight: bold; }
+        .rank-2 { color: #c0c0c0; font-weight: bold; }
+        .rank-3 { color: #cd7f32; font-weight: bold; }
+
+        /* MOCKUP DE SMS (CELULAR) */
+        .sms-mockup {
+            background-color: #f0f0f0;
+            border-radius: 30px; /* Bordes redondeados de celular */
+            border: 10px solid #222; /* Marco del celular */
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: none;
+            max-width: 320px; /* Más angosto que un correo */
+            margin: 0 auto;
+        }
+        .sms-mockup.active { display: block; animation: slideIn 0.4s ease-out; }
+        
+        .sms-header {
+            background-color: #f9f9f9;
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            color: #000;
+        }
+        .sms-body {
+            padding: 20px;
+            background-color: #ffffff;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; /* Hace que los mensajes salgan desde abajo */
+        }
+        .sms-bubble {
+            background-color: #e5e5ea; /* Color típico de burbuja SMS recibida */
+            color: #000;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px; /* Punta del globo de texto */
+            max-width: 85%;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1><i class="fas fa-shield-alt"></i> Simulador de Ingeniería Social</h1>
+        <p>Identifica si es legítimo o un intento de Phishing.</p>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p id="question-counter" style="font-size: 0.8em; color: var(--text-muted); margin-top: 5px;">Pregunta 1 de X</p>
+    </header>
+
+    <div id="app-container">
+        
+        <div id="scenario-container"></div>
+            <div id="action-buttons" class="action-buttons active">
+            <button class="btn btn-phishing" onclick="checkAnswer(true)"><i class="fas fa-fish"></i> ¡Es Phishing!</button>
+            <button class="btn btn-legit" onclick="checkAnswer(false)"><i class="fas fa-check-circle"></i> Es Legítimo</button>
+        </div>
+
+        <div id="feedback-overlay" class="feedback-overlay">
+            <div id="feedback-icon" class="feedback-icon"></div>
+            <h2 id="feedback-title"></h2>
+            <p id="feedback-text" style="font-size: 1.1em; max-width: 600px;"></p>
+            <p><strong style="color: var(--warning);">Categoría Evaluada: </strong><span id="feedback-category"></span></p>
+            <button class="btn btn-next" onclick="nextQuestion()">Siguiente Caso <i class="fas fa-arrow-right"></i></button>
+        </div>
+
+        <div id="results-screen">
+            <h2>Evaluación Completada</h2>
+            <div class="score-circle" id="final-score">0%</div>
+            <div class="timer-result" id="final-time"></div>
+            
+            <div class="save-section" id="save-section">
+                <input type="text" id="player-name" class="name-input" placeholder="Ingresa tu nombre o alias" maxlength="20">
+                <button class="btn btn-next" style="margin-top: 0;" onclick="saveScore()">Guardar Puntaje</button>
+            </div>
+            
+            <div class="mistakes-list" id="mistakes-container">
+                <h3><i class="fas fa-exclamation-triangle"></i> Áreas de Oportunidad (Fallos):</h3>
+                <ul id="mistakes-list"></ul>
+            </div>
+
+            <h3><i class="fas fa-trophy"></i> Salón de la Fama</h3>
+            <table class="leaderboard-table" id="leaderboard">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Puntaje</th>
+                        <th>Promedio (s)</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                </tbody>
+            </table>
+
+            <br>
+            <button class="btn btn-next" onclick="location.reload()">Reintentar Simulación</button>
+            <a href="PR-02.html" class="btn" style="background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); text-decoration: none; margin-left: 10px;">Volver al Documento</a>
+        </div>
+
+    </div>
+
+    <script>
+        // BASE DE DATOS DE PREGUNTAS ACTUALIZADA
+        const questions = [
+            {
+                id: 1, 
+                type: "email", // <--- NUEVO
+                category: "Sentido de Urgencia / Suspensión de Cuenta",
+                sender: "Soporte TI &lt;admin-update@soporte-it-seguridad.com&gt;",
+                subject: "URGENTE: Tu cuenta será suspendida en 2 horas",
+                body: "Estimado usuario,<br><br>Hemos detectado actividad inusual en su cuenta corporativa. Por motivos de seguridad, suspenderemos su acceso en exactamente 2 horas a menos que verifique su identidad inmediatamente.<br><br>Haga clic en el siguiente enlace para verificar:<br><a href='#' style='color: blue; text-decoration: underline;'>http://verificacion-cuenta-segura.com/login</a><br><br>Atentamente,<br>El equipo de TI.",
+                isPhishing: true,
+                explanation: "El remitente usa un dominio falso. Crea un sentido de urgencia extremo para generar pánico."
+            },
+            {
+                id: 2, 
+                type: "email",
+                category: "Whaling / Fraude del CEO",
+                sender: "Director General &lt;director.general.empresa@gmail.com&gt;",
+                subject: "Transferencia confidencial requerida",
+                body: "Hola,<br><br>Estoy en una reunión y no puedo atender llamadas. Necesito que proceses una transferencia urgente de $45,000 MXN a la cuenta del nuevo proveedor. <br><br>Por favor, envíame un correo en cuanto esté hecho. Es altamente confidencial.<br><br>Saludos.",
+                isPhishing: true,
+                explanation: "El supuesto Director usa un correo de Gmail público, presiona para saltar protocolos y pide secrecía."
+            },
+            {
+                id: 3, 
+                type: "email",
+                category: "Comunicación Interna Legítima",
+                sender: "Recursos Humanos &lt;rh_10212@universidad.edu.mx&gt;",
+                subject: "Recordatorio: Encuesta de clima laboral",
+                body: "Buen día equipo,<br><br>Les recordamos que la encuesta anual de clima laboral estará abierta hasta el próximo viernes. Participar es opcional.<br><br>Pueden acceder desde la intranet oficial: <br><a href='#' style='color: blue;'>https://intranet.tu-universidad.edu.mx/encuestas</a><br><br>Saludos cordiales.",
+                isPhishing: false,
+                explanation: "Proviene de un dominio real, no exige acciones bajo amenaza, y el enlace apunta a un subdominio conocido."
+            },
+            {
+                id: 4, 
+                type: "sms", 
+                category: "Smishing (Phishing por SMS)",
+                sender: "Banco BBVA",
+                subject: "", 
+                body: "BBVA: Su tarjeta ha sido bloqueada por intento de cargo no reconocido de $2,500. Para cancelar este cargo y verificar su identidad ingrese a: https://bbva-alertas-seguridad.com/auth",
+                isPhishing: true,
+                explanation: "Ataque de Smishing. Los bancos reales rara vez envían enlaces directos por SMS para 'cancelar cargos'. Además, el dominio 'bbva-alertas-seguridad.com' es falso."
+            },
+            {
+                id: 5, 
+                type: "email",
+                category: "Spear Phishing / Falsa actualización",
+                sender: "Soporte Plataforma &lt;soporte@universidad-portal-alumnos.com&gt;",
+                subject: "Actualización obligatoria del portal de calificaciones",
+                body: "Estimado alumno,<br><br>Se requiere instalar el nuevo certificado de seguridad web para poder acceder al sistema de calificaciones y reinscripciones de este semestre.<br><br>Por favor, descarga e instala la herramienta de actualización aquí:<br><a href='#' style='color: blue; text-decoration: underline;'>http://descargas-seguras-cert.net/update.exe</a><br><br>Atentamente,<br>Mesa de Ayuda Educativa.",
+                isPhishing: true,
+                explanation: "Spear Phishing dirigido a estudiantes. Un portal oficial jamás te pediría descargar un archivo ejecutable (.exe) externo para ver tus calificaciones; esto suele ser un instalador de Malware o Ransomware."
+            },
+            {
+                id: 6, 
+                type: "sms",
+                category: "Doble Factor de Autenticación (Legítimo)",
+                sender: "Microsoft",
+                subject: "",
+                body: "G-827391 es tu codigo de verificacion de Microsoft. Nadie de Microsoft te pedira este codigo. No lo compartas.",
+                isPhishing: false,
+                explanation: "Es un mensaje estándar de autenticación multifactor (MFA). Es legítimo porque no incluye enlaces engañosos, no te pide que respondas el mensaje y te advierte explícitamente que no lo compartas."
+            },
+            {
+                id: 7, 
+                type: "sms",
+                category: "Smishing / Falsa Paquetería",
+                sender: "+52 55 1234 5678",
+                subject: "",
+                body: "DHL Express: Su paquete esta retenido en aduana por falta de pago de aranceles (24.50 MXN). Pague ahora para liberar su envio: https://dhl-envios-aduana.net/pago",
+                isPhishing: true,
+                explanation: "Smishing clásico. Los atacantes se aprovechan de la ansiedad de esperar un paquete. Las paqueterías reales usan números cortos verificados, no números de celular de 10 dígitos, y el dominio 'dhl-envios-aduana.net' es un clon fraudulento."
+            },
+            {
+                id: 8, 
+                type: "email",
+                category: "Phishing Financiero / Pretexting",
+                sender: "Facturación Amazon &lt;pagos-amazon@aws-services-billing-info.com&gt;",
+                subject: "Confirmación de pedido: Apple iPhone 15 Pro Max",
+                body: "Hola,<br><br>Gracias por tu compra. Se han cargado <strong>$25,999 MXN</strong> a tu tarjeta de crédito con terminación 4021.<br><br>El envío llegará mañana. Si tú <strong>NO</strong> realizaste esta compra, descarga la factura adjunta para ver los detalles y procesar la cancelación inmediata:<br><br>📎 <a href='#' style='color: blue;'>factura_cancelacion_pedido.zip</a><br><br>Saludos,<br>Equipo de Prevención de Fraudes",
+                isPhishing: true,
+                explanation: "Ataque psicológico. Genera pánico reportando un cargo muy alto para que la víctima actúe por impulso. El archivo '.zip' no es una factura, esconde un software malicioso (Troyano)."
+            },
+            {
+                id: 9, 
+                type: "email",
+                category: "Comunicación Interna Legítima",
+                sender: "Seguridad de la Información &lt;ciso@organizacion.com&gt;",
+                subject: "Actualización de políticas de contraseñas 2026",
+                body: "Equipo,<br><br>A partir del 1 de abril, la longitud mínima de las contraseñas de red corporativa será de 14 caracteres.<br><br>Por favor, asegúrense de actualizarla cuando el sistema operativo Windows se los solicite al iniciar sesión en sus equipos. No es necesario realizar ninguna acción en este momento ni responder a este correo.<br><br>Saludos cordiales.",
+                isPhishing: false,
+                explanation: "Correo informativo real. Instruye a los usuarios a cambiar su contraseña a través de los canales seguros del sistema operativo, en lugar de poner un enlace sospechoso que diga 'Haz clic aquí para cambiar tu contraseña'."
+            },
+            {
+                id: 10, 
+                type: "email",
+                category: "Oferta de Empleo Falsa (Scam)",
+                sender: "Reclutamiento Tech &lt;jobs@google-careers-hr.com&gt;",
+                subject: "Oferta de empleo: Ingeniero en Ciberseguridad Jr.",
+                body: "Hola,<br><br>Vimos tu perfil y nos impresionó tu Portafolio de Ciberseguridad en GitHub. Queremos ofrecerte un puesto remoto inmediato ganando $4,000 USD al mes.<br><br>Para iniciar el proceso de contratación y enviarte tu laptop de trabajo, solo necesitas realizar un pago administrativo reembolsable de $50 USD para la certificación del equipo.<br><br>Haz clic aquí para iniciar el trámite:<br><a href='#' style='color: blue;'>https://google-careers-hr.com/onboarding</a>",
+                isPhishing: true,
+                explanation: "Fraude de reclutamiento. Los atacantes buscan perfiles técnicos recién egresados. Ninguna empresa legítima (y mucho menos gigantes tecnológicos) te pedirá dinero por adelantado para 'certificaciones' o equipo de trabajo."
+            }
+        ];
+
+        // ... (deja las variables currentIndex, score, etc. igual) ...
+        let currentIndex = 0;
+        let score = 0;
+        let mistakes = [];
+        let questionStartTime = 0;
+        let totalTime = 0;
+
+        // Actualizamos la referencia al nuevo ID
+        const scenarioContainer = document.getElementById('scenario-container');
+        const progressBar = document.getElementById('progress-bar');
+        const counterText = document.getElementById('question-counter');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const actionButtons = document.getElementById('action-buttons');
+
+        // LA FUNCIÓN DE CARGA AHORA ES INTELIGENTE
+        function loadQuestion() {
+            const q = questions[currentIndex];
+            
+            // Verificamos qué tipo de escenario es para dibujarlo diferente
+            if (q.type === "email") {
+                scenarioContainer.className = "email-mockup active";
+                scenarioContainer.innerHTML = `
+                    <div class="email-header">
+                        <p><strong>De:</strong> ${q.sender}</p>
+                        <p><strong>Para:</strong> empleado@organizacion.com</p>
+                        <p><strong>Asunto:</strong> ${q.subject}</p>
+                    </div>
+                    <div class="email-body">${q.body}</div>
+                `;
+            } else if (q.type === "sms") {
+                scenarioContainer.className = "sms-mockup active";
+                scenarioContainer.innerHTML = `
+                    <div class="sms-header">
+                        <i class="fas fa-user-circle" style="font-size: 2em; color: #ccc; display: block; margin: 0 auto 5px;"></i>
+                        ${q.sender}
+                    </div>
+                    <div class="sms-body">
+                        <div class="sms-bubble">${q.body}</div>
+                    </div>
+                `;
+            }
+
+            const progress = ((currentIndex) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            counterText.innerText = `Pregunta ${currentIndex + 1} de ${questions.length}`;
+            feedbackOverlay.classList.remove('active');
+            actionButtons.classList.add('active');
+            
+            questionStartTime = Date.now();
+        }
+
+        function checkAnswer(userSaysPhishing) {
+            // Detener cronómetro y calcular tiempo en segundos
+            const timeTaken = (Date.now() - questionStartTime) / 1000;
+            totalTime += timeTaken;
+
+            const q = questions[currentIndex];
+            const isCorrect = (userSaysPhishing === q.isPhishing);
+            actionButtons.classList.remove('active');
+
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            
+            if (isCorrect) {
+                score++;
+                icon.innerHTML = '<i class="fas fa-check-circle feedback-correct"></i>';
+                title.innerText = "¡Correcto!";
+                title.className = "feedback-correct";
+            } else {
+                mistakes.push(q.category);
+                icon.innerHTML = '<i class="fas fa-times-circle feedback-incorrect"></i>';
+                title.innerText = "¡Incorrecto!";
+                title.className = "feedback-incorrect";
+            }
+
+            document.getElementById('feedback-text').innerText = q.explanation;
+            document.getElementById('feedback-category').innerText = q.category;
+            feedbackOverlay.classList.add('active');
+        }
+
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('scenario-container').style.display = 'none';
+            feedbackOverlay.style.display = 'none';
+            progressBar.style.width = '100%';
+            counterText.innerText = "Simulación Finalizada";
+
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('active');
+
+            const percentage = Math.round((score / questions.length) * 100);
+            const scoreCircle = document.getElementById('final-score');
+            scoreCircle.innerText = `${percentage}%`;
+
+            if(percentage >= 80) scoreCircle.style.borderColor = "var(--success)";
+            else if(percentage >= 50) scoreCircle.style.borderColor = "var(--warning)";
+            else scoreCircle.style.borderColor = "var(--danger)";
+
+            // Mostrar el tiempo promedio
+            const avgTime = (totalTime / questions.length).toFixed(1);
+            document.getElementById('final-time').innerHTML = `<i class="fas fa-stopwatch"></i> Tiempo promedio de reacción: ${avgTime} segundos`;
+
+            const mistakesList = document.getElementById('mistakes-list');
+            if (mistakes.length === 0) {
+                mistakesList.innerHTML = "<li style='color: var(--success);'>¡Excelente! Tienes un instinto de ciberseguridad impecable.</li>";
+            } else {
+                const uniqueMistakes = [...new Set(mistakes)];
+                uniqueMistakes.forEach(m => {
+                    mistakesList.innerHTML += `<li>${m}</li>`;
+                });
+            }
+
+            renderLeaderboard();
+        }
+
+        loadQuestion();
+
+        // --- LÓGICA DEL LEADERBOARD EN LA NUBE ---
+        
+        // ¡¡RECUERDA PEGAR TU URL DE APPS SCRIPT AQUÍ ABAJO!!
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzX784nMmVlrdUmESn_Hv0ctyGi3GM85WXxvYXqiqvnW0wjvZHhNVeuV2CX1-udGxjkag/exec';
+
+        function saveScore() {
+            const nameInput = document.getElementById('player-name').value.trim();
+            if (nameInput === "") {
+                alert("Por favor, ingresa un nombre para guardar tu puntaje.");
+                return;
+            }
+
+            const saveBtn = document.querySelector('#save-section button');
+            saveBtn.innerText = "Guardando...";
+            saveBtn.disabled = true;
+
+            const percentage = Math.round((score / questions.length) * 100);
+            const avgTime = (totalTime / questions.length).toFixed(1);
+
+            // Añadimos el tiempo a la URL que se manda a Google Sheets
+            const urlToSave = `${SCRIPT_URL}?action=save&name=${encodeURIComponent(nameInput)}&score=${percentage}&time=${avgTime}`;
+
+            fetch(urlToSave)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('save-section').style.display = 'none';
+                    renderLeaderboard(); 
+                })
+                .catch(error => {
+                    console.error('Error al guardar:', error);
+                    alert("Hubo un error al guardar. Intenta de nuevo.");
+                    saveBtn.innerText = "Guardar Puntaje";
+                    saveBtn.disabled = false;
+                });
+        }
+
+        function renderLeaderboard() {
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Cargando puntajes en vivo... <i class='fas fa-spinner fa-spin'></i></td></tr>";
+
+            const urlToGet = `${SCRIPT_URL}?action=get`;
+
+            fetch(urlToGet)
+                .then(response => response.json())
+                .then(top10 => {
+                    tbody.innerHTML = ""; 
+
+                    if (top10.length === 0) {
+                        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:gray;'>Aún no hay registros. ¡Sé el primero!</td></tr>";
+                        return;
+                    }
+
+                    top10.forEach((player, index) => {
+                        let rankClass = "";
+                        if (index === 0) rankClass = "rank-1";
+                        else if (index === 1) rankClass = "rank-2";
+                        else if (index === 2) rankClass = "rank-3";
+                        
+                        // Si por alguna razón el tiempo no está en la base, mostramos un guión
+                        const playerTime = player.time ? `${player.time}s` : '-';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="${rankClass}">${index + 1}</td>
+                                <td class="${rankClass}">${player.name}</td>
+                                <td class="${rankClass}">${player.score}%</td>
+                                <td class="${rankClass}">${playerTime}</td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar la tabla:', error);
+                    tbody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#ff7b72;'>Error de conexión con la base de datos.</td></tr>";
+                });
+        }
+
+    </script>
+</body>
+</html>
