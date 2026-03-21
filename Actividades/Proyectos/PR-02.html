@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PR-02</title>
     <link rel="stylesheet" href="../../Design/design.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0d1117;
@@ -70,34 +71,75 @@
             margin-bottom: 20px;
         }
         
-        /* CONTENEDOR DE PLATAFORMAS (AHORA CENTRADO) */
+        /* CONTENEDOR DE PLATAFORMAS */
         .platform-grid {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centra las tarjetas en la pantalla */
-            gap: 25px;
+            align-items: center;
+            gap: 20px;
             margin-top: 30px;
         }
 
-        /* TARJETAS DE PLATAFORMAS (ANCHO LIMITADO PARA LECTURA) */
+        /* TARJETAS DE PLATAFORMAS (ACORDEÓN) */
         .platform-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 30px; /* Más espacio interno para que respire el texto */
+            padding: 20px 30px;
             border-radius: 8px;
             width: 100%;
-            max-width: 750px; /* Este límite hace que la lectura no canse la vista */
+            max-width: 750px;
             box-sizing: border-box;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer; /* Indica que se puede hacer clic */
+            transition: border-color 0.2s, transform 0.2s;
+            user-select: none;
         }
         
+        .platform-card:hover { border-color: var(--accent); }
+        
         .platform-card h3 {
-            margin-top: 0;
+            margin: 0;
             color: var(--accent);
+            border-bottom: 1px solid transparent; /* Transparente por defecto */
+            padding-bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3em;
+            position: relative;
+            transition: border-bottom 0.3s, padding-bottom 0.3s;
+        }
+
+        /* Icono de la flecha a la derecha */
+        .chevron-icon {
+            position: absolute;
+            right: 0;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        /* ESTILOS CUANDO LA TARJETA ESTÁ ABIERTA */
+        .platform-card.expanded h3 {
             border-bottom: 1px solid var(--border);
             padding-bottom: 15px;
-            text-align: center; /* El título de cada herramienta ahora está centrado */
-            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .platform-card.expanded .chevron-icon {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+
+        /* CONTENIDO OCULTO POR DEFECTO */
+        .card-content {
+            display: none;
+            animation: fadeInDown 0.3s ease;
+        }
+        .platform-card.expanded .card-content { display: block; }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* TABLAS */
@@ -129,33 +171,14 @@
         tr:hover { background-color: rgba(88, 166, 255, 0.05); }
 
         /* BADGES Y LISTAS */
-        .badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        .badge-green { background: rgba(35, 134, 54, 0.2); color: #7ee787; border: 1px solid #238636; }
-        .badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
-        
         ul.custom-list { list-style: none; padding-left: 0; margin-bottom: 0; }
-        ul.custom-list li { margin-bottom: 12px; padding-left: 20px; position: relative; }
+        ul.custom-list li { margin-bottom: 12px; padding-left: 20px; position: relative; color: var(--text-main); }
         ul.custom-list li:last-child { margin-bottom: 0; }
         ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
 
-        footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            font-size: 0.8em;
-            color: var(--text-muted);
-        }
-
-         /* Botón de descarga de PDF */
+        /* BOTONES (PDF y QUIZ) */
         .btn-pdf {
-            background-color: var(--danger); /* Rojo para PDF */
+            background-color: var(--danger);
             color: white;
             padding: 10px 20px;
             text-decoration: none;
@@ -166,11 +189,42 @@
             gap: 8px;
             transition: opacity 0.3s;
             border: 1px solid #da3633;
-            margin-bottom: 5%;
+            margin-bottom: 20px;
         }
         .btn-pdf:hover { opacity: 0.8; }
-        
 
+        .btn-quiz {
+            background-color: var(--success);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+            transition: transform 0.2s, opacity 0.3s;
+            margin-top: 20px;
+            border: 1px solid #2ea043;
+        }
+        .btn-quiz:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        #enlc{
+            color: aliceblue;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -192,7 +246,6 @@
         </div>
 
         <header>
-            
             <div class="info-box">
                 <p><strong>Tema:</strong> Investigación y simulación educativa de Phishing.</p>
                 <p><strong>Objetivos:</strong> Diseñar, implementar y evaluar de manera ética una simulación educativa de phishing, sustentada en el análisis comparativo de plataformas profesionales del mercado, con el propósito de medir el nivel de reconocimiento de amenazas de ingeniería social en usuarios, interpretar los resultados mediante un sistema de puntuación global y reflexionar sobre la gestión responsable del riesgo humano en seguridad informática.</p>
@@ -201,69 +254,105 @@
 
         <section>
             <h2>1. Investigación de Plataformas del Mercado</h2>
-            <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);">Análisis de las principales soluciones empresariales para concientización y simulación de phishing.</p>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--text-muted);"><em>Haz clic sobre una plataforma para desplegar u ocultar su información.</em></p>
 
             <div class="platform-grid">
-                <div class="platform-card">
-                    <h3><i class="fas fa-crosshairs"></i> 1. Hoxhunt</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Se basa en la gamificación extrema. Envía simulaciones adaptativas directamente a la bandeja de entrada. Si el usuario reporta el correo, gana puntos y sube en un ranking.</li>
-                        <li><strong>Enfoque Ético:</strong> Prioriza el refuerzo positivo sobre el castigo por hacer clic. Sus micro-aprendizajes duran menos de 1 minuto.</li>
-                        <li><strong>Diferenciador:</strong> Utiliza IA Adaptativa para ajustar la dificultad individualmente.</li>
-                        <li><strong>Métrica Clave:</strong> Dwell Time (Tiempo de permanencia hasta que el usuario reporta).</li>
-                    </ul>
+                
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-crosshairs"></i> 1. Hoxhunt</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Se basa en la gamificación extrema. Envía simulaciones adaptativas directamente a la bandeja de entrada. Si el usuario reporta el correo, gana puntos y sube en un ranking.</li>
+                            <li><strong>Enfoque Ético:</strong> Prioriza el refuerzo positivo sobre el castigo por hacer clic. Sus micro-aprendizajes duran menos de 1 minuto.</li>
+                            <li><strong>Diferenciador:</strong> Utiliza IA Adaptativa para ajustar la dificultad individualmente.</li>
+                            <li><strong>Métrica Clave:</strong> Dwell Time (Tiempo de permanencia hasta que el usuario reporta).</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="platform-card">
-                    <h3><i class="fas fa-shield-virus"></i> 2. Proofpoint</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Integración con su sistema de protección de correo (TAP). Utiliza ataques reales interceptados para crear plantillas.</li>
-                        <li><strong>Enfoque Ético:</strong> Se centra en la identificación de VAPs (Very Attacked People) para no saturar a toda la plantilla.</li>
-                        <li><strong>Diferenciador:</strong> Convierte ataques reales bloqueados en plantillas de simulación en minutos. Identifica automáticamente a los empleados objetivo.</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-shield-virus"></i> 2. Proofpoint</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Integración con su sistema de protección de correo (TAP). Utiliza ataques reales interceptados para crear plantillas.</li>
+                            <li><strong>Enfoque Ético:</strong> Se centra en la identificación de VAPs (Very Attacked People) para no saturar a toda la plantilla.</li>
+                            <li><strong>Diferenciador:</strong> Convierte ataques reales bloqueados en plantillas de simulación en minutos. Identifica automáticamente a los empleados objetivo.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="platform-card">
-                    <h3><i class="fas fa-brain"></i> 3. KnowBe4</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Es el gigante del mercado con la biblioteca de contenido más grande. Su IA (AIDA) personaliza los escenarios según el historial.</li>
-                        <li><strong>Enfoque Ético:</strong> Utiliza el "Phish-prone %" (porcentaje de propensión al phishing) para mejora continua.</li>
-                        <li><strong>Diferenciador:</strong> Smart Groups permite automatizar grupos basados en criterios complejos de comportamiento.</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-brain"></i> 3. KnowBe4</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Es el gigante del mercado con la biblioteca de contenido más grande. Su IA (AIDA) personaliza los escenarios según el historial.</li>
+                            <li><strong>Enfoque Ético:</strong> Utiliza el "Phish-prone %" (porcentaje de propensión al phishing) para mejora continua.</li>
+                            <li><strong>Diferenciador:</strong> Smart Groups permite automatizar grupos basados en criterios complejos de comportamiento.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="platform-card">
-                    <h3><i class="fas fa-users"></i> 4. Cofense</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Fomenta la creación de una red de sensores humanos. El botón "Cofense Reporter" es el eje central para borrar correos maliciosos masivamente.</li>
-                        <li><strong>Enfoque Ético:</strong> El usuario no es una víctima, es un "analista de primera línea".</li>
-                        <li><strong>Diferenciador:</strong> Triage: Ayuda al SOC a analizar y eliminar el correo de todas las bandejas instantáneamente.</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-users"></i> 4. Cofense</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Fomenta la creación de una red de sensores humanos. El botón "Cofense Reporter" es el eje central para borrar correos maliciosos masivamente.</li>
+                            <li><strong>Enfoque Ético:</strong> El usuario no es una víctima, es un "analista de primera línea".</li>
+                            <li><strong>Diferenciador:</strong> Triage: Ayuda al SOC a analizar y eliminar el correo de todas las bandejas instantáneamente.</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="platform-card">
-                    <h3><i class="fas fa-robot"></i> 5. Phished</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Plataforma 100% automatizada mediante IA. Lanza ataques de spear phishing personalizados automáticamente estudiando el perfil público.</li>
-                        <li><strong>Diferenciador:</strong> Phished Assistant actúa como un "coach" de IA en tiempo real.</li>
-                        <li><strong>Métrica:</strong> Behavioral Risk Score™ (puntaje de riesgo conductual).</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-robot"></i> 5. Phished</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Plataforma 100% automatizada mediante IA. Lanza ataques de spear phishing personalizados automáticamente estudiando el perfil público.</li>
+                            <li><strong>Diferenciador:</strong> Phished Assistant actúa como un "coach" de IA en tiempo real.</li>
+                            <li><strong>Métrica:</strong> Behavioral Risk Score™ (puntaje de riesgo conductual).</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="platform-card">
-                    <h3><i class="fas fa-video"></i> 6. NINJIO</h3>
-                    <ul class="custom-list">
-                        <li><strong>Características:</strong> Contenido en vídeos estilo anime/cómic de 3 minutos, basados en ataques reales recientes. El storytelling es su arma principal.</li>
-                        <li><strong>Enfoque Psicológico:</strong> Identifica si un usuario es más susceptible a la Urgencia, Autoridad o Curiosidad.</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-video"></i> 6. NINJIO</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Características:</strong> Contenido en vídeos estilo anime/cómic de 3 minutos, basados en ataques reales recientes. El storytelling es su arma principal.</li>
+                            <li><strong>Enfoque Psicológico:</strong> Identifica si un usuario es más susceptible a la Urgencia, Autoridad o Curiosidad.</li>
+                        </ul>
+                    </div>
                 </div>
                 
-                <div class="platform-card">
-                    <h3><i class="fas fa-layer-group"></i> 7. Mimecast & 8. Infosec IQ</h3>
-                    <ul class="custom-list">
-                        <li><strong>Mimecast:</strong> Usa el humor para mantener el compromiso. Incluye encuestas de sentimiento del usuario. Utiliza Predictive Risk Scoring.</li>
-                        <li><strong>Infosec IQ:</strong> Más de 2,000 recursos de formación. Simulaciones de smishing (SMS) y vishing (voz). Especializado en aprendizaje just-on-time.</li>
-                    </ul>
+                <div class="platform-card" onclick="this.classList.toggle('expanded')">
+                    <h3>
+                        <span><i class="fas fa-layer-group"></i> 7. Mimecast & 8. Infosec IQ</span>
+                        <i class="fas fa-chevron-down chevron-icon"></i>
+                    </h3>
+                    <div class="card-content">
+                        <ul class="custom-list">
+                            <li><strong>Mimecast:</strong> Usa el humor para mantener el compromiso. Incluye encuestas de sentimiento del usuario. Utiliza Predictive Risk Scoring.</li>
+                            <li><strong>Infosec IQ:</strong> Más de 2,000 recursos de formación. Simulaciones de smishing (SMS) y vishing (voz). Especializado en aprendizaje just-on-time.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -346,6 +435,18 @@
                     <li><strong>CanIPhish:</strong> Plataforma SaaS con un "Tier gratuito perpetuo" que permite envíos limitados, perfecto para ejercicios pequeños.</li>
                 </ul>
             </div>
+        </section>
+
+        <section style="text-align: center; border-bottom: none;">
+            <h2>4. Simulación Práctica e Interactiva</h2>
+            <p>Pon a prueba los conceptos investigados. Evalúa tu capacidad de identificar amenazas de ingeniería social en este simulador con Leaderboard en tiempo real.</p>
+            <p>¿Quieres más contexto? Checa la siguiente información: </p>
+            <a  id="enlc" href="https://www.ibm.com/mx-es/think/topics/phishing" target="_blank">¿Qué es el Pishing?</a> <br>
+            <a id="enlc" href="https://www.trendmicro.com/es_mx/what-is/phishing/types-of-phishing.html" target="_blank">Tipos de Pishing</a>
+            <br>
+            <a href="quiz.html" class="btn-quiz">
+                <i class="fas fa-gamepad"></i> Iniciar Simulador de Phishing
+            </a>
         </section>
 
         <footer>
