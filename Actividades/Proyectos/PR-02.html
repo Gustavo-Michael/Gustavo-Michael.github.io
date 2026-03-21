@@ -28,6 +28,59 @@
             line-height: 1.6;
         }
 
+        /* NAVBAR GLOBAL FIJA */
+        .global-header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            position: sticky; /* ¡Esto hace la magia de quedarse fijo! */
+            top: 0;
+            z-index: 1000; /* Asegura que flote por encima de todo el contenido */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header-brand {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2em;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .global-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 25px;
+        }
+
+        .global-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            transition: color 0.3s, border-bottom 0.3s;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .global-nav a:hover {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        /* Ocultar texto del menú en celulares muy pequeños, dejar solo iconos si se desea */
+        @media (max-width: 600px) {
+            .global-nav ul { gap: 15px; }
+            .global-nav a { font-size: 0.85em; }
+        }
+
         /* BARRA DE NAVEGACIÓN SUPERIOR */
         .top-bar {
             background: var(--card-bg);
@@ -229,10 +282,24 @@
 </head>
 <body>
 
-    <div class="top-bar">
+    <!--div class="top-bar">
         <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Volver al Portafolio</a>
         <span>CNO V - Seguridad Informática</span>
-    </div>
+    </div-->
+
+   <header class="global-header">
+        <a href="../../index.html" class="header-brand">
+            <i class="fas fa-shield-alt"></i> Portafolio CNO V
+        </a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../../index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="../../actividades.html"><i class="fas fa-flask"></i> Actividades</a></li>
+                <li><a href="../../actividades.html"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+                <li><a href="#"><i class="fas fa-plus-circle"></i> Extras</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="container">
 
