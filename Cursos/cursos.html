@@ -1,0 +1,452 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extras - Certificaciones y Talleres</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --card-bg: #161b22;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR GLOBAL FIJA */
+        .global-header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header-brand {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2em;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .global-nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 25px;
+        }
+
+        .global-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            transition: color 0.3s, border-bottom 0.3s;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .global-nav a:hover, .global-nav a.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        /* CONTENEDOR PRINCIPAL CENTRADO */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { 
+            color: var(--accent); 
+            border-bottom: 2px solid var(--border); 
+            padding-bottom: 10px; 
+            text-align: center;
+            width: 100%;
+            margin-top: 0;
+        }
+
+        h2 { 
+            color: var(--accent); 
+            margin-top: 40px; 
+            border-left: 4px solid var(--accent); 
+            padding-left: 10px;
+            width: 100%;
+            max-width: 750px;
+        }
+
+        p.intro-text {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+
+        /* GRID DE LOGROS COMPLEMENTARIOS */
+        .extras-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* TARJETAS DE EXTRAS */
+        .extra-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 25px 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 750px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .extra-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .extra-icon {
+            font-size: 2.5em;
+            color: var(--warning);
+            margin-top: 5px;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .extra-info {
+            width: 100%;
+        }
+
+        .extra-info h3 {
+            margin: 0 0 10px 0;
+            color: #ffffff;
+            font-size: 1.25em;
+        }
+
+        .extra-meta {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .extra-meta span i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        /* BOTONES DE ACCIÓN EN TARJETAS */
+        .extra-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-extra-action {
+            font-size: 0.85em;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        
+        .btn-extra-action:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-pdf-view {
+            background-color: rgba(218, 54, 51, 0.15);
+            color: #ff7b72;
+            border: 1px solid var(--danger);
+        }
+
+        .btn-course-link {
+            background-color: rgba(88, 166, 255, 0.15);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-cert { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+        .badge-course { background: rgba(35, 134, 54, 0.15); color: #7ee787; border: 1px solid var(--success); }
+
+        footer {
+            margin-top: auto;
+            padding: 40px 0 20px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <a href="../index.html" class="header-brand">
+            <i class="fas fa-shield-alt"></i> Portafolio CNO V
+        </a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="../index.html#evidencias"><i class="fas fa-flask"></i> Actividades</a></li>
+                <li><a href="PR-02.html"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+                <li><a href="#" class="active"><i class="fas fa-plus-circle"></i> Extras</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <h1>Actividades Complementarias y Extras</h1>
+        <p class="intro-text">
+            Registro y documentación de módulos académicos, talleres prácticos y competencias curriculares desarrolladas para fortalecer el perfil en ciberseguridad y análisis de sistemas informáticos.
+        </p>
+
+        <h2><i class="fas fa-certificate"></i> Historial de Cursos </h2>
+        
+        <div class="extras-grid">
+            
+            <div class="extra-card">
+                <div class="extra-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>1. Introducción a la ciberseguridad</h3>
+                        <span class="badge badge-cert">Módulo I</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Febrero 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Estudio inicial sobre los principios fundamentales de seguridad, la tríada CIA (Confidencialidad, Integridad y Disponibilidad), tipos comunes de malware y las implicaciones de los ataques en entornos digitales.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="/Certificados/certificado1.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Certificado
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: var(--success);"><i class="fas fa-network-wired"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>2. Conceptos básicos de redes</h3>
+                        <span class="badge badge-course">Módulo II</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Febrero 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Comprensión de las arquitecturas de red estructuradas, el modelo OSI, el conjunto de protocolos TCP/IP, direccionamiento de subredes IPv4/IPv6 y las funciones operativas de los componentes de comunicación.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado2.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Certificado
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: var(--accent);"><i class="fas fa-terminal"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>3. Dispositivos de red y configuración inicial</h3>
+                        <span class="badge badge-course">Módulo III</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Marzo 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Implementación y configuración básica de switches y routers mediante comandos del sistema operativo Cisco IOS, establecimiento de contraseñas seguras, SSH, configuración de interfaces y segmentación de tráfico local.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado3.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Certificado
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: var(--warning);"><i class="fas fa-laptop"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>4. Seguridad en terminales</h3>
+                        <span class="badge badge-cert">Módulo IV</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Abril 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Análisis de vulnerabilidades y hardening aplicados a sistemas operativos de endpoints. Implementación de firewalls locales, políticas de control de accesos, análisis de bitácoras de auditoría y mitigación de intrusiones.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado4.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Certificado
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: #61dafb;"><i class="fas fa-biohazard"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>5. Administración de amenazas cibernéticas</h3>
+                        <span class="badge badge-course">Módulo V</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Mayo 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Estrategias de gobernanza, gestión del riesgo e inteligencia de amenazas. Aplicación práctica de marcos de seguridad estructurados como NIST, taxonomía de incidentes informáticos y flujos de remediación organizada.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado5.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Certificado
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: #ff9900;"><i class="fas fa-user-tie"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>6. Carrera Profesional de Analista Junior en Ciberseguridad</h3>
+                        <span class="badge badge-course">Trayectoria</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-building"></i> Cisco Networking Academy</span>
+                        <span><i class="fas fa-calendar-alt"></i> Mayo 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Preparación integral para roles operativos dentro de un SOC (Security Operations Center). Metodologías de monitoreo continuo de alertas, análisis forense preliminar y triaje estructurado de incidentes de seguridad.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado6.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Constancia
+                        </a>
+                        <a href="https://www.netacad.com/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-card">
+                <div class="extra-icon" style="color: var(--danger);"><i class="fas fa-user-secret"></i></div>
+                <div class="extra-info">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <h3>7. Hacker ético</h3>
+                        <span class="badge badge-cert">Especialidad</span>
+                    </div>
+                    <div class="extra-meta">
+                        <span><i class="fas fa-user-shield"></i> Formación Complementaria</span>
+                        <span><i class="fas fa-calendar-alt"></i> Mayo 2026</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.9em; color: var(--text-muted);">
+                        Metodologías estructuradas de pruebas de penetración (pentesting). Fases del hacking ético: reconocimiento pasivo/activo, escaneo exhaustivo de puertos, análisis de debilidades de red y explotación controlada de sistemas.
+                    </p>
+                    <div class="extra-actions">
+                        <a href="Certificados/certificado7.pdf" target="_blank" class="btn-extra-action btn-pdf-view">
+                            <i class="fas fa-file-pdf"></i> PDF Constancia
+                        </a>
+                        <a href="https://owasp.org/" target="_blank" class="btn-extra-action btn-course-link">
+                            <i class="fas fa-external-link-alt"></i> Enlace al Curso
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <p>Sección de Evidencias Extracurriculares | CNO V - Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
+
