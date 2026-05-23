@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 16: Dilemas Éticos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --card-bg: #161b22;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* NAVBAR GLOBAL FIJA */
+        .global-header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .header-brand { color: var(--accent); font-weight: bold; font-size: 1.2em; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .global-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 25px; }
+        .global-nav a { color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 0.95em; transition: color 0.3s; }
+        .global-nav a:hover, .global-nav a.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 { color: var(--accent); margin: 0; font-size: 1.8em; }
+
+        /* BOTÓN DESCARGAR PDF */
+        .btn-pdf {
+            background-color: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #da3633;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity 0.3s;
+        }
+        .btn-pdf:hover { opacity: 0.8; }
+
+        /* INFO BOX */
+        .info-box {
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 40px;
+        }
+
+        /* TARJETAS DE ESCENARIOS */
+        .scenario-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .scenario-header {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+        }
+        .scenario-header h2 { margin: 0 0 10px 0; color: #fff; font-size: 1.4em; display: flex; align-items: center; gap: 10px; }
+        .scenario-header p { margin: 0; color: var(--text-muted); font-style: italic; }
+
+        .scenario-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .scenario-body { grid-template-columns: 1fr; }
+        }
+
+        .scenario-body h3 { color: var(--accent); font-size: 1.1em; margin-top: 0; border-bottom: 1px dashed var(--border); padding-bottom: 8px; }
+        
+        /* LISTAS Y CAJAS INTERNAS */
+        ul.custom-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        ul.custom-list li { margin-bottom: 10px; padding-left: 20px; position: relative; font-size: 0.95em; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+        .ethics-box {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        .ethics-box strong { color: var(--warning); }
+
+        .commandment { padding: 10px; border-radius: 6px; font-size: 0.9em; margin-bottom: 10px; }
+        .violated { background: rgba(218, 54, 51, 0.1); border: 1px solid var(--danger); color: #ff7b72; }
+        .respected { background: rgba(35, 134, 54, 0.1); border: 1px solid var(--success); color: #7ee787; }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-danger { background: rgba(218, 54, 51, 0.2); color: #ff7b72; border: 1px solid var(--danger); }
+        .badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="global-header">
+        <a href="../index.html" class="header-brand"><i class="fas fa-shield-alt"></i> Portafolio CNO V</a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="../index.html#evidencias" class="active"><i class="fas fa-flask"></i> Actividades</a></li>
+                <li><a href="PR-02.html"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+                <li><a href="../Cursos/cursos.html"><i class="fas fa-graduation-cap"></i> Cursos</a></li>
+                <li><a href="extras.html"><i class="fas fa-plus-circle"></i> Extras</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="header-actions">
+            <h1>Actividad 16: Dilemas Éticos en Ciberseguridad</h1>
+            <a href="../PDFs/act16-Equipo3.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar Documento
+            </a>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Objetivo:</strong> Análisis y resolución de escenarios que presentan conflictos morales en el ámbito de la seguridad de la información. Evaluación mediante el enfoque utilitarista, de derechos y de bien común, aplicando los Mandamientos de la Ética Informática y el marco legal.</p>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2><i class="fas fa-user-secret" style="color: var(--warning);"></i> Escenario 01: Acceso no autorizado interno</h2>
+                <p>"Un compañero accedió a correos privados del director general sin autorización argumentando que buscaba detectar posibles fugas de información."</p>
+            </div>
+            
+            <div class="scenario-body">
+                <div>
+                    <h3><i class="fas fa-balance-scale"></i> 1. El Dilema Ético</h3>
+                    <p style="font-size: 0.9em;">Conflicto entre la <strong>Seguridad Proactiva y la Privacidad Individual</strong>. ¿El fin justifica los medios? Se rompió la cadena de mando y los protocolos de auditoría interna.</p>
+                    
+                    <h3><i class="fas fa-user-shield"></i> 2. Acción Especializada</h3>
+                    <ul class="custom-list">
+                        <li><strong>Contención Inmediata:</strong> Inhabilitación temporal de permisos del compañero.</li>
+                        <li><strong>Trazabilidad:</strong> Apertura de un Ticket de Incidente documentando los logs.</li>
+                        <li><strong>Notificación:</strong> Reporte inmediato al CISO y Recursos Humanos (Falta grave).</li>
+                    </ul>
+
+                    <h3><i class="fas fa-gavel"></i> 5. Clasificación Legal</h3>
+                    <span class="badge badge-danger">Delito Informático</span>
+                    <p style="font-size: 0.85em; margin-top: 5px; color: var(--text-muted);">Afecta directamente la Confidencialidad (tríada CIA) mediante el acceso no autorizado al sistema.</p>
+                </div>
+
+                <div>
+                    <h3><i class="fas fa-landmark"></i> 3. Justificación Ética</h3>
+                    <div class="ethics-box">
+                        <strong>Utilitarista:</strong> El supuesto "beneficio" no supera el daño de crear una cultura de espionaje y desconfianza laboral.
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Derechos:</strong> Violación directa al derecho fundamental a la privacidad de las comunicaciones.
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Bien Común:</strong> Permitir "excepciones" destruye el orden institucional de la empresa.
+                    </div>
+
+                    <h3 style="margin-top: 20px;"><i class="fas fa-scroll"></i> 4. Ética Informática</h3>
+                    <div class="commandment violated">
+                        <strong><i class="fas fa-times-circle"></i> Violados:</strong> II. No interferirás con el trabajo informático de otros / IV. No indagarás en los archivos informáticos de los demás.
+                    </div>
+                    <div class="commandment respected">
+                        <strong><i class="fas fa-check-circle"></i> Respetados:</strong> X. Garantizar consideración y respeto (al reportar la falta del compañero).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2><i class="fas fa-bug" style="color: var(--danger);"></i> Escenario 02: Vulnerabilidad crítica no reportada</h2>
+                <p>"Durante un pentest sin contrato firmado aún, hallas una vulnerabilidad que permite extraer dinero de un sistema financiero sin ser detectado."</p>
+            </div>
+            
+            <div class="scenario-body">
+                <div>
+                    <h3><i class="fas fa-balance-scale"></i> 1. El Dilema Ético</h3>
+                    <p style="font-size: 0.9em;">Conflicto entre el <strong>Lucro Económico y la Integridad Profesional</strong>. Aprovechar un vacío legal frente al deber de un "Hacker Sombrero Blanco".</p>
+                    
+                    <h3><i class="fas fa-user-shield"></i> 2. Acción Especializada</h3>
+                    <ul class="custom-list">
+                        <li><strong>Responsible Disclosure:</strong> Reportar inmediatamente al contacto técnico.</li>
+                        <li><strong>Cero Explotación:</strong> No extraer fondos, protegiendo reputación y defensa legal.</li>
+                        <li><strong>Demostración de Valor:</strong> Usar el hallazgo como catalizador ético para firmar el contrato.</li>
+                    </ul>
+
+                    <h3><i class="fas fa-gavel"></i> 5. Clasificación Legal</h3>
+                    <span class="badge badge-warning">Delito Asistido por Computadora</span>
+                    <p style="font-size: 0.85em; margin-top: 5px; color: var(--text-muted);">El sistema es solo el medio para cometer un delito tradicional: el robo financiero.</p>
+                </div>
+
+                <div>
+                    <h3><i class="fas fa-landmark"></i> 3. Justificación Ética</h3>
+                    <div class="ethics-box">
+                        <strong>Utilitarista:</strong> Reportarla salva el capital de miles, generando el mayor bien para la mayor cantidad de personas.
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Derechos:</strong> Protege el derecho humano a la propiedad privada de los clientes.
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Bien Común:</strong> Evita debilitar la confianza en la banca digital y la economía nacional.
+                    </div>
+
+                    <h3 style="margin-top: 20px;"><i class="fas fa-scroll"></i> 4. Ética Informática</h3>
+                    <div class="commandment violated">
+                        <strong><i class="fas fa-times-circle"></i> En riesgo de Violación:</strong> Interferir con archivos ajenos / Usar la computadora para robar.
+                    </div>
+                    <div class="commandment respected">
+                        <strong><i class="fas fa-check-circle"></i> Respetados:</strong> No te apropiarás de la producción intelectual ni de los fondos de terceros.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2><i class="fas fa-search" style="color: var(--accent);"></i> Escenario 03: Uso malicioso de herramientas OSINT</h2>
+                <p>"Tu superior te pide usar información personal pública (OSINT) de un sospechoso de fraude para presionarlo psicológicamente e involucrar a su familia."</p>
+            </div>
+            
+            <div class="scenario-body">
+                <div>
+                    <h3><i class="fas fa-balance-scale"></i> 1. El Dilema Ético</h3>
+                    <p style="font-size: 0.9em;">Conflicto entre el <strong>Cumplimiento de Órdenes y la Legalidad Humanitaria</strong>. Cruzar la línea entre investigación técnica y extorsión/acoso.</p>
+                    
+                    <h3><i class="fas fa-user-shield"></i> 2. Acción Especializada</h3>
+                    <ul class="custom-list">
+                        <li><strong>Objeción de Conciencia:</strong> Negativa rotunda a participar en tácticas de hostigamiento.</li>
+                        <li><strong>Objetividad Técnica:</strong> Entregar evidencia OSINT limpia para procesos legales.</li>
+                        <li><strong>Cadena de Custodia:</strong> Asegurar que la información no sea manipulada ni usada como arma personal.</li>
+                    </ul>
+
+                    <h3><i class="fas fa-gavel"></i> 5. Clasificación Legal</h3>
+                    <span class="badge badge-warning">Delito Incidental</span>
+                    <p style="font-size: 0.85em; margin-top: 5px; color: var(--text-muted);">El acoso es el delito central; la tecnología (OSINT) solo facilitó su planeación.</p>
+                </div>
+
+                <div>
+                    <h3><i class="fas fa-landmark"></i> 3. Justificación Ética</h3>
+                    <div class="ethics-box">
+                        <strong>Utilitarista:</strong> Evita demandas millonarias por acoso que dañarían a la empresa.
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Derechos:</strong> Protege la dignidad del sospechoso y la paz de terceros inocentes (familia).
+                    </div>
+                    <div class="ethics-box">
+                        <strong>Bien Común:</strong> Evita el "vigilantismo digital"; la justicia corresponde al Estado.
+                    </div>
+
+                    <h3 style="margin-top: 20px;"><i class="fas fa-scroll"></i> 4. Ética Informática</h3>
+                    <div class="commandment violated">
+                        <strong><i class="fas fa-times-circle"></i> Rechazo a Violar:</strong> No usarás la computadora para dañar a personas ni ignorarás las consecuencias sociales de tu trabajo.
+                    </div>
+                    <div class="commandment respected">
+                        <strong><i class="fas fa-check-circle"></i> Respetados:</strong> Usar los sistemas garantizando la consideración y el respeto a la dignidad humana.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Análisis de Vulnerabilidades y Gestión del Riesgo Humano | CNO V - Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
