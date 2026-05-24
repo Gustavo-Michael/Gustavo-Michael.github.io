@@ -40,14 +40,14 @@
             z-index: -2;
         }
 
-       .cyber-overlay {
+        .cyber-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, rgba(9, 12, 15, 0.9) 0%, rgba(2, 3, 3, 0.75) 100%);
-            backdrop-filter: blur(2px);
+            background: linear-gradient(135deg, rgba(13, 17, 23, 0.9) 0%, rgba(13, 17, 23, 0.75) 100%);
+            backdrop-filter: blur(4px);
             z-index: -1;
         }
 
@@ -268,28 +268,6 @@
             color: var(--text-muted);
             position: relative;
         }
-
-        /* MODO IMPRESIÓN (PDF) */
-        @media print {
-            body { background-color: #ffffff !important; color: #000000 !important; font-family: 'Arial', sans-serif !important; }
-            .cyber-bg, .cyber-overlay, .global-header, .btn-pdf, footer { display: none !important; }
-            .container { max-width: 100%; margin: 0; padding: 0; }
-            .header-actions { border-bottom: 2px solid #000; }
-            h1, h2, h3, p, span, li, div { color: #000000 !important; text-shadow: none !important; }
-            
-            .scenario-card { 
-                background: #ffffff !important; 
-                border: 2px solid #333 !important; 
-                box-shadow: none !important; 
-                page-break-inside: avoid;
-                margin-bottom: 30px;
-                transform: none !important;
-            }
-            .scenario-header { background: #f4f4f4 !important; border-bottom: 2px solid #333 !important; }
-            .info-box, .metric-box, .vector-string { background: #f9f9f9 !important; border: 1px solid #aaa !important; }
-            .score-circle { border: 5px solid #000 !important; color: #000 !important; box-shadow: none !important; }
-            .badge { border: 2px solid #000 !important; color: #000 !important; background: transparent !important; box-shadow: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -317,8 +295,8 @@
                 <h1>Actividad 17: Evaluación de vulnerabilidades CVSS 3.1</h1>
                 <p class="author-name">Por: Gustavo Michael Larios Guerra</p>
             </div>
-            <a href="../PDFs/act17-Equipo3.pdf" class="btn-pdf" download>
-                <i class="fas fa-file-pdf"></i> Descargar Documento
+            <a href="PDFs/act17-Equipo3.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar PDF
             </a>
         </div>
 
@@ -420,15 +398,15 @@
             </div>
             <div class="scenario-body">
                 <h3>Análisis del Riesgo</h3>
-                <p>La vulnerabilidad analizada alcanzó una puntuación de 4.7, por lo que se considera de <strong>Nivel Medio</strong>. A pesar de que para explotarla se requieren privilegios elevados (PR:H), sigue representando un riesgo importante dentro de la infraestructura.</p>
+                <p>La vulnerabilidad analizada alcanzó una puntuación de 4.7 en CVSS v3.1, por lo que se considera de <strong>nivel medio</strong>. A pesar de que para explotarla se requieren privilegios elevados, sigue representando un riesgo importante. Podría ser utilizada por usuarios internos maliciosos o por atacantes que hayan obtenido acceso a cuentas privilegiadas.</p>
                 
-                <p>El hecho de que pueda explotarse remotamente (AV:N) y con baja complejidad técnica (AC:L) aumenta su criticidad. Podría ser utilizada por atacantes que hayan obtenido acceso a cuentas privilegiadas mediante robo de credenciales, o por usuarios internos maliciosos.</p>
+                <p>El hecho de que pueda explotarse remotamente y con baja complejidad técnica aumenta su importancia dentro de la infraestructura de una organización.</p>
 
                 <h3 style="margin-top: 30px;">Mitigación Recomendada</h3>
                 <ul class="custom-list">
-                    <li>Auditoría y supervisión estricta de cuentas con altos privilegios.</li>
-                    <li>Implementación de controles de seguridad adicionales para mitigar el riesgo de accesos parciales.</li>
-                    <li>Estrategias de parcheo planificadas, reconociendo que un impacto "bajo" en la tríada CIA aún requiere mitigación operativa para evitar escaladas.</li>
+                    <li>Supervisión de cuentas con altos privilegios.</li>
+                    <li>Implementar controles de seguridad.</li>
+                    <li>Estrategias de mitigación que ayuden a proteger la información y los servicios.</li>
                 </ul>
             </div>
         </div>
@@ -440,7 +418,7 @@
         </div>
 
         <footer>
-            <p>Tercer Parcial Análisis de Riesgos | CNO V - Seguridad Informática</p>
+            <p>Gestión de Riesgos y Evaluación de Vulnerabilidades | CNO V - Seguridad Informática</p>
             <p>© 2026 Portafolio de Evidencias</p>
         </footer>
     </div>
