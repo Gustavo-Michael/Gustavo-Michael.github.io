@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad 17: Evaluación CVSS v3.1</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.5);
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --card-glass: rgba(22, 27, 34, 0.6);
+            --border-glass: rgba(88, 166, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* FONDO ANIMADO Y CAPA OSCURA */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            /* 👇 COLOCA LA RUTA DE TU GIF AQUÍ 👇 */
+            background-image: url('../Design/matrix2.gif'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+
+       .cyber-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(9, 12, 15, 0.9) 0%, rgba(2, 3, 3, 0.75) 100%);
+            backdrop-filter: blur(2px);
+            z-index: -1;
+        }
+
+        /* NAVBAR GLOBAL EFECTO CRISTAL */
+        .global-header {
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-brand { 
+            color: var(--accent); 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .global-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 25px; }
+        .global-nav a { color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 0.95em; transition: all 0.3s ease; }
+        .global-nav a:hover, .global-nav a.active { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-glass);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 { color: var(--accent); margin: 0; font-size: 1.8em; text-shadow: 0 0 15px var(--accent-glow); }
+        .author-name { color: var(--text-muted); font-size: 1.1em; margin: 5px 0 0 0; font-weight: bold; }
+
+        /* BOTÓN DESCARGAR */
+        .btn-pdf {
+            background-color: rgba(218, 54, 51, 0.1);
+            color: #ff7b72;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--danger);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(218, 54, 51, 0.2);
+        }
+        .btn-pdf:hover { 
+            background-color: var(--danger);
+            color: white;
+            box-shadow: 0 0 20px rgba(218, 54, 51, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* INFO BOX CRISTAL */
+        .info-box {
+            background: var(--card-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-glass);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .reflection-box {
+            border-left: 4px solid var(--success);
+            margin-top: 50px;
+        }
+
+        .reflection-box h2 {
+            margin-top: 0;
+            color: var(--success);
+            border-bottom: 1px dashed var(--border-glass);
+            padding-bottom: 10px;
+        }
+
+        /* TARJETAS DE ESCENARIOS */
+        .scenario-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 15px 40px var(--accent-glow);
+        }
+        
+        .scenario-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .scenario-header h2 { margin: 0; color: #fff; font-size: 1.4em; }
+
+        .scenario-body {
+            padding: 25px;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2col { grid-template-columns: 1fr; }
+        }
+
+        .scenario-body h3 { color: var(--accent); font-size: 1.1em; margin-top: 0; border-bottom: 1px dashed var(--border-glass); padding-bottom: 8px; }
+        
+        /* LISTAS Y ELEMENTOS DE DATOS */
+        ul.custom-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        ul.custom-list li { margin-bottom: 10px; padding-left: 20px; position: relative; font-size: 0.95em; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+        .metric-box {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glass);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .metric-label { font-weight: bold; color: var(--text-main); }
+        .metric-value { color: var(--accent); font-family: monospace; font-size: 1.1em; }
+
+        .vector-string {
+            background: rgba(13, 17, 23, 0.9);
+            border: 1px solid var(--accent);
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: var(--success);
+            text-align: center;
+            font-size: 1.1em;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(35, 134, 54, 0.2);
+        }
+
+        .score-display {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border: 5px solid var(--warning);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            margin: 0 auto 10px auto;
+            font-weight: bold;
+            color: var(--warning);
+            box-shadow: 0 0 20px rgba(210, 153, 34, 0.4);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+        .badge-warning { background: rgba(210, 153, 34, 0.2); color: #e3b341; border: 1px solid var(--warning); }
+        .badge-info { background: rgba(88, 166, 255, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+
+        footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glass);
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        /* MODO IMPRESIÓN (PDF) */
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; font-family: 'Arial', sans-serif !important; }
+            .cyber-bg, .cyber-overlay, .global-header, .btn-pdf, footer { display: none !important; }
+            .container { max-width: 100%; margin: 0; padding: 0; }
+            .header-actions { border-bottom: 2px solid #000; }
+            h1, h2, h3, p, span, li, div { color: #000000 !important; text-shadow: none !important; }
+            
+            .scenario-card { 
+                background: #ffffff !important; 
+                border: 2px solid #333 !important; 
+                box-shadow: none !important; 
+                page-break-inside: avoid;
+                margin-bottom: 30px;
+                transform: none !important;
+            }
+            .scenario-header { background: #f4f4f4 !important; border-bottom: 2px solid #333 !important; }
+            .info-box, .metric-box, .vector-string { background: #f9f9f9 !important; border: 1px solid #aaa !important; }
+            .score-circle { border: 5px solid #000 !important; color: #000 !important; box-shadow: none !important; }
+            .badge { border: 2px solid #000 !important; color: #000 !important; background: transparent !important; box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-bg"></div>
+    <div class="cyber-overlay"></div>
+
+    <header class="global-header">
+        <a href="../index.html" class="header-brand"><i class="fas fa-shield-alt"></i> Portafolio CNO V</a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="../index.html#evidencias" class="active"><i class="fas fa-flask"></i> Actividades</a></li>
+                <li><a href="PR-02.html"><i class="fas fa-project-diagram"></i> Proyectos</a></li>
+                <li><a href="../Cursos/cursos.html"><i class="fas fa-graduation-cap"></i> Cursos</a></li>
+                <li><a href="extras.html"><i class="fas fa-plus-circle"></i> Extras</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="header-actions">
+            <div class="header-titles">
+                <h1>Actividad 17: Evaluación de vulnerabilidades CVSS 3.1</h1>
+                <p class="author-name">Por: Gustavo Michael Larios Guerra</p>
+            </div>
+            <a href="../PDFs/act17-Equipo3.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar Documento
+            </a>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Autor Original:</strong> Equipo 3</p>
+            <p><strong>Objetivo:</strong> Analizar y clasificar el riesgo técnico de una vulnerabilidad específica utilizando el estándar de la industria <em>Common Vulnerability Scoring System</em> (CVSS v3.1), construyendo su vector paramétrico y determinando su impacto en la confidencialidad, integridad y disponibilidad (Tríada CIA).</p>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>1. Construcción del Vector (Métricas Base)</h2>
+            </div>
+            <div class="scenario-body grid-2col">
+                <div>
+                    <h3>Métricas de Explotabilidad</h3>
+                    <div class="metric-box">
+                        <span class="metric-label">Vector de Ataque (AV)</span>
+                        <span class="metric-value">Network (N)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">La vulnerabilidad puede explotarse a través de la red.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Complejidad (AC)</span>
+                        <span class="metric-value">Low (L)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">La explotación requiere baja complejidad.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Privilegios Requeridos (PR)</span>
+                        <span class="metric-value">High (H)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">Se necesitan privilegios elevados para ejecutar el ataque.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Interacción del Usuario (UI)</span>
+                        <span class="metric-value">None (N)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px;">No requiere interacción del usuario.</p>
+                </div>
+
+                <div>
+                    <h3>Métricas de Impacto</h3>
+                    <div class="metric-box">
+                        <span class="metric-label">Alcance (Scope - S)</span>
+                        <span class="metric-value">Unchanged (U)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">La vulnerabilidad no afecta a componentes fuera de su alcance de seguridad.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Confidencialidad (C)</span>
+                        <span class="metric-value">Low (L)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">Impacto bajo en la fuga de datos.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Integridad (I)</span>
+                        <span class="metric-value">Low (L)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px; margin-bottom: 15px;">Impacto bajo en la modificación de datos.</p>
+
+                    <div class="metric-box">
+                        <span class="metric-label">Disponibilidad (A)</span>
+                        <span class="metric-value">Low (L)</span>
+                    </div>
+                    <p style="font-size: 0.85em; color: var(--text-muted); margin-top: -5px;">Impacto bajo en la interrupción del servicio.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>2. Cálculo y Resultado CVSS</h2>
+            </div>
+            <div class="scenario-body">
+                <h3>Vector Paramétrico Final</h3>
+                <div class="vector-string">
+                    CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L
+                </div>
+
+                <div class="score-display">
+                    <p style="color: var(--text-muted); margin-bottom: 5px; font-weight: bold; text-transform: uppercase;">Puntuación Base</p>
+                    <div class="score-circle">4.7</div>
+                    <span class="badge badge-warning">Severidad Media</span>
+                </div>
+
+                <h3>Rango de Categorías Oficiales (CVSS v3.1)</h3>
+                <ul class="custom-list" style="max-width: 400px; margin: 15px auto;">
+                    <li><strong>Baja:</strong> 0.1 - 3.9</li>
+                    <li><strong>Media:</strong> 4.0 - 6.9</li>
+                    <li><strong>Alta:</strong> 7.0 - 8.9</li>
+                    <li><strong>Crítica:</strong> 9.0 - 10.0</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>3. Conclusión y Plan de Acción</h2>
+            </div>
+            <div class="scenario-body">
+                <h3>Análisis del Riesgo</h3>
+                <p>La vulnerabilidad analizada alcanzó una puntuación de 4.7, por lo que se considera de <strong>Nivel Medio</strong>. A pesar de que para explotarla se requieren privilegios elevados (PR:H), sigue representando un riesgo importante dentro de la infraestructura.</p>
+                
+                <p>El hecho de que pueda explotarse remotamente (AV:N) y con baja complejidad técnica (AC:L) aumenta su criticidad. Podría ser utilizada por atacantes que hayan obtenido acceso a cuentas privilegiadas mediante robo de credenciales, o por usuarios internos maliciosos.</p>
+
+                <h3 style="margin-top: 30px;">Mitigación Recomendada</h3>
+                <ul class="custom-list">
+                    <li>Auditoría y supervisión estricta de cuentas con altos privilegios.</li>
+                    <li>Implementación de controles de seguridad adicionales para mitigar el riesgo de accesos parciales.</li>
+                    <li>Estrategias de parcheo planificadas, reconociendo que un impacto "bajo" en la tríada CIA aún requiere mitigación operativa para evitar escaladas.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="info-box reflection-box">
+            <h2>Reflexión Personal</h2>
+            <p>El estándar CVSS v3.1 demuestra ser una herramienta indispensable para la priorización en la gestión de vulnerabilidades. Una puntuación "Media" de 4.7 no significa que la amenaza deba ser ignorada, sino que debe evaluarse en su contexto: al ser atacable desde la red (Network) sin complejidad, el verdadero peligro reside en que los atacantes solo necesitan comprometer credenciales administrativas para hacer daño.</p>
+            <p>Esta evaluación enfatiza la importancia de las políticas Zero Trust (Cero Confianza) y el Principio de Menor Privilegio (PoLP). No basta con confiar ciegamente en los usuarios con privilegios altos; es necesario monitorear su actividad y parchar estas vulnerabilidades para cerrar posibles brechas internas o escaladas de privilegios.</p>
+        </div>
+
+        <footer>
+            <p>Gestión de Riesgos y Evaluación de Vulnerabilidades | CNO V - Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
