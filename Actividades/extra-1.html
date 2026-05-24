@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extra: Auditoría de Seguridad IoT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.5);
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --card-glass: rgba(22, 27, 34, 0.65);
+            --border-glass: rgba(88, 166, 255, 0.2);
+            --terminal-bg: #0d1117;
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-wrap: break-word;
+        }
+
+        /* FONDO ANIMADO Y CAPA OSCURA */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../Design/matrix2.gif'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            background-color: #000000;
+        }
+
+        .cyber-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(360deg, rgba(0, 0, 0, 0.93) 0%, rgba(13, 17, 23, 0.82) 100%);
+            backdrop-filter: blur(4px);
+            z-index: -1;
+        }
+
+        /* NAVBAR GLOBAL EFECTO CRISTAL */
+        .global-header {
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-brand { 
+            color: var(--accent); 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .global-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 25px; }
+        .global-nav a { color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 0.95em; transition: all 0.3s ease; }
+        .global-nav a:hover, .global-nav a.active { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-glass);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 { color: var(--accent); margin: 0; font-size: 1.8em; text-shadow: 0 0 15px var(--accent-glow); }
+        .author-name { color: var(--text-muted); font-size: 1.1em; margin: 5px 0 0 0; font-weight: bold; }
+
+        /* BOTÓN DESCARGAR DIRECTO */
+        .btn-pdf {
+            background-color: rgba(218, 54, 51, 0.1);
+            color: #ff7b72;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--danger);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(218, 54, 51, 0.2);
+            white-space: nowrap;
+        }
+        .btn-pdf:hover { 
+            background-color: var(--danger);
+            color: white;
+            box-shadow: 0 0 20px rgba(218, 54, 51, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* CARD GENERAL */
+        .scenario-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            margin-bottom: 35px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .scenario-header {
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .scenario-header h2 { margin: 0; color: #fff; font-size: 1.4em; }
+        .scenario-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9em; }
+
+        .scenario-body {
+            padding: 25px;
+        }
+
+        /* GRIDS DE SEPARACIÓN */
+        .grid-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        /* Grid asimétrico para texto + imagen */
+        .grid-text-img { display: grid; grid-template-columns: 1.5fr 1fr; gap: 25px; align-items: start; }
+        .grid-img-text { display: grid; grid-template-columns: 1fr 1.5fr; gap: 25px; align-items: start; }
+        
+        @media (max-width: 900px) {
+            .grid-3col { grid-template-columns: 1fr; }
+            .grid-text-img, .grid-img-text { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .grid-2col { grid-template-columns: 1fr; }
+        }
+
+        /* CONTENEDORES DE IMÁGENES (NUEVO) */
+        .cyber-img-container {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            transition: border-color 0.3s ease;
+        }
+        .cyber-img-container:hover {
+            border-color: var(--accent);
+        }
+        .cyber-img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: block;
+            margin-bottom: 10px;
+        }
+        /* Estilo para cuando la imagen no carga (Placeholder visual) */
+        .cyber-img:not([src]), .cyber-img[src=""] {
+            min-height: 200px;
+            background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cyber-img:not([src])::after, .cyber-img[src=""]::after {
+            content: "🖼️ Espacio para Imagen";
+            color: var(--text-muted);
+            font-size: 1.2em;
+        }
+        .img-caption {
+            font-size: 0.85em;
+            color: var(--accent);
+            margin: 0;
+            font-style: italic;
+        }
+
+        /* BLOQUES DE INFORMACIÓN SINTETIZADA */
+        .info-box {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .data-box {
+            background: rgba(10, 14, 20, 0.5);
+            border: 1px solid var(--border-glass);
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            word-break: break-word;
+        }
+        .data-box:hover { border-color: var(--accent); background: rgba(10, 14, 20, 0.7); }
+        .data-box strong { color: var(--accent); display: block; margin-bottom: 6px; font-size: 1.1em; border-bottom: 1px dashed rgba(88, 166, 255, 0.2); padding-bottom: 4px; }
+        
+        .code-snippet {
+            background: var(--terminal-bg);
+            border: 1px solid var(--border-glass);
+            border-left: 3px solid var(--success);
+            padding: 12px;
+            border-radius: 4px;
+            color: #7ee787;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            margin-top: 10px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        /* TABLAS ESTILO CYBER */
+        .cyber-table-container { 
+            overflow-x: auto; 
+            margin-top: 15px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-glass); 
+            background: rgba(0,0,0,0.2); 
+        }
+        .cyber-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 0.9em; 
+            min-width: 600px; 
+            text-align: left; 
+        }
+        .cyber-table th { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 12px; border-bottom: 1px solid var(--border-glass); text-transform: uppercase; letter-spacing: 1px; }
+        .cyber-table td { padding: 10px 12px; border-bottom: 1px solid var(--border-glass); color: var(--text-main); vertical-align: top; word-wrap: break-word; }
+        .cyber-table tr:hover { background: rgba(88, 166, 255, 0.05); }
+
+        .scenario-body h3 { color: var(--accent); font-size: 1.2em; margin-top: 25px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 8px; }
+        .scenario-body h3:first-child { margin-top: 0; }
+        
+        ul.custom-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        ul.custom-list li { margin-bottom: 10px; padding-left: 20px; position: relative; font-size: 0.95em; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+        .reflection-box { border-left: 4px solid var(--success); margin-top: 50px; }
+        .reflection-box h2 { margin-top: 0; color: var(--success); border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px; }
+
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; white-space: nowrap; }
+        .badge-danger { background: rgba(218, 54, 51, 0.15); color: #ff7b72; border: 1px solid var(--danger); }
+        .badge-warning { background: rgba(210, 153, 34, 0.15); color: #e3b341; border: 1px solid var(--warning); }
+        .badge-info { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+
+        footer { margin-top: 40px; padding: 20px 0 40px 0; border-top: 1px solid var(--border-glass); text-align: center; font-size: 0.8em; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-bg"></div>
+    <div class="cyber-overlay"></div>
+
+    <header class="global-header">
+        <a href="../index.html" class="header-brand">Portafolio CNO V</a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#evidencias">Actividades</a></li>
+                <li><a href="PR-02.html">Proyectos</a></li>
+                <li><a href="../Cursos/cursos.html">Cursos</a></li>
+                <li><a href="extras.html" class="active">Extras</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="header-actions">
+            <div class="header-titles">
+                <h1>Actividad Extra: Auditoría de Seguridad IoT</h1>
+                <p class="author-name">Por: Gustavo Michael Larios Guerra</p>
+            </div>
+            <a href="../PDFs/Reporte_Auditoria_IoT.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar Reporte Técnico
+            </a>
+        </div>
+
+        <div class="grid-text-img">
+            <div class="info-box" style="margin-bottom: 0; height: 100%">
+                <p><strong>Objetivo Técnico:</strong> Ejecutar un análisis forense de red (tráfico y comportamiento) de un dispositivo IoT comercial (un foco inteligente) operando dentro de una red de área local (LAN).</p>
+                <p>La finalidad es desmitificar la operación "Plug & Play", identificar comunicaciones salientes ocultas mediante interceptación <em>Man-in-the-Middle</em>, descubrir protocolos de telemetría y evaluar las brechas de privacidad expuestas hacia infraestructuras en el extranjero.</p>
+            </div>
+            <div class="cyber-img-container">
+                <img src="https://http2.mlstatic.com/D_NQ_NP_2X_657650-MLA100061055565_122025-F.webp"  class="cyber-img">
+            </div>
+        </div>
+
+        <div class="scenario-card" style="margin-top: 35px;">
+            <div class="scenario-header">
+                <h2>1. Laboratorio y Arsenal Táctico</h2>
+                <p>Configuración del entorno de pruebas para garantizar visibilidad en Capa 2.</p>
+            </div>
+            <div class="scenario-body">
+                <div class="grid-3col">
+                    <div class="data-box">
+                        <strong>Sistema Auditor</strong>
+                        <span>Máquina virtual ejecutando <strong>Kali Linux</strong>. Configurada con adaptador de red en modo <em>Bridged</em> (Puente) para obtener una dirección IP en el mismo segmento físico que el objetivo y manipular la tabla ARP del router local.</span>
+                    </div>
+                    <div class="data-box">
+                        <strong>Pre-Configuración (IP Forwarding)</strong>
+                        <span>Para evitar que el dispositivo IoT perdiera conexión a internet durante el ataque MitM y detuviera su telemetría, se habilitó el enrutamiento de paquetes en el kernel de Linux.</span>
+                        <div class="code-snippet">sudo sysctl -w net.ipv4.ip_forward=1</div>
+                    </div>
+                    <div class="data-box">
+                        <strong>Stack de Herramientas</strong>
+                        <ul class="custom-list" style="margin-bottom: 0;">
+                            <li><code>arp-scan</code> y <code>nmap</code> para reconocimiento.</li>
+                            <li><code>arpspoof</code> para la interceptación activa.</li>
+                            <li><code>wireshark</code> para análisis forense de paquetes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>2. Metodología y Ejecución del Ataque (MitM)</h2>
+                <p>Fases de descubrimiento pasivo e interceptación activa del tráfico.</p>
+            </div>
+            <div class="scenario-body">
+                <div class="grid-text-img">
+                    <div>
+                        <h3>Fase de Búsqueda y Reconocimiento</h3>
+                        <p>El primer paso fue mapear la superficie de ataque de la red local para aislar la dirección IP del objetivo. Se utilizó correlación física (encendido/apagado) y resolución de prefijos OUI (Organizationally Unique Identifier) del fabricante.</p>
+                        <div class="code-snippet">sudo arp-scan --localnet</div>
+                        
+                        <p style="margin-top: 15px;">Una vez aislada la IP, se ejecutó un escaneo de puertos completos para perfilar los servicios locales del dispositivo IoT, buscando puertos de administración expuestos (Telnet/HTTP).</p>
+                        <div class="code-snippet">nmap -p- -sV &lt;IP_IOT&gt;</div>
+
+                        <h3>Fase de Intercepción (ARP Spoofing)</h3>
+                        <p>Se lanzó un ataque de envenenamiento ARP para alterar el flujo natural de la red. Esto obligó a que todos los paquetes enviados por el foco hacia el router pasaran obligatoriamente por la interfaz `eth0` de la máquina atacante.</p>
+                        <div class="code-snippet">sudo arpspoof -i eth0 -t &lt;IP_IOT&gt; &lt;IP_ROUTER&gt;</div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="cyber-img-container">
+                            <img src="Material/nmap.jpg" alt="Escaneo Nmap" class="cyber-img">
+                            <p class="img-caption">Figura 2: Identificación del objetivo en terminal</p>
+                        </div>
+                        <div class="cyber-img-container">
+                            <img src="Material/spoof.jpg" alt="Ejecución de ARP Spoofing" class="cyber-img">
+                            <p class="img-caption">Figura 3: Ejecución de ARP Spoofing exitosa</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>3. Análisis Forense: Hallazgos en Wireshark</h2>
+                <p>Lectura de paquetes en tránsito y disección del flujo TCP.</p>
+            </div>
+            <div class="scenario-body">
+                <div class="grid-img-text">
+                    <div class="cyber-img-container" style="align-self: center;">
+                        <img src="Material/wireshark.png" alt="Captura Wireshark Follow TCP Stream" class="cyber-img">
+                        <p class="img-caption">Figura 4: Análisis 'Follow TCP Stream' de la telemetría</p>
+                    </div>
+
+                    <div>
+                        <p>Durante la captura paralela en Wireshark, el tráfico filtrado por la MAC del objetivo reveló anomalías críticas de diseño:</p>
+                        <ul class="custom-list">
+                            <li><strong>Destinos Externos Ocultos:</strong> El dispositivo establece túneles persistentes con servidores remotos no declarados. Las consultas <code>whois</code> de las IPs (ej. 47.251.58.124 y 47.254.41.55) revelaron que la telemetría se aloja en clústeres de <strong>Alibaba Cloud</strong>.</li>
+                            <li><strong>Puerto de Control:</strong> La comunicación bidireccional ocurre constantemente a través del puerto <strong>TCP 8815</strong>.</li>
+                            <li><strong>Protocolo mDNS (Discovery):</strong> El foco inyecta consultas multicast <code>PTR (_googlecast._tcp.local)</code>, demostrando que escanea activamente la LAN en busca de otros ecosistemas inteligentes compatibles (como Chromecast o Google Home).</li>
+                            <li><strong>Exposición de Hardware:</strong> La herramienta <em>Follow TCP Stream</em> confirmó que la MAC Address y tokens identificadores se transmiten con ofuscación débil, haciéndolos interceptables.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>4. Matriz de Riesgos y Remediación</h2>
+                <p>Impacto operativo y controles recomendados para redes corporativas o domésticas.</p>
+            </div>
+            <div class="scenario-body">
+                
+                <div class="cyber-table-container">
+                    <table class="cyber-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Riesgo</th>
+                                <th>Nivel</th>
+                                <th>Descripción de la Vulnerabilidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge badge-info">Privacidad Cero</span></td>
+                                <td><span class="badge badge-danger">Alto</span></td>
+                                <td>El dispositivo efectúa la recolección y transmisión continua de metadatos de estado (encendido/apagado) hacia infraestructura de terceros (Alibaba Cloud). Esto permite a un actor externo perfilar con precisión los patrones de presencia y hábitos de los usuarios del inmueble.</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge badge-info">Brecha de Perímetro</span></td>
+                                <td><span class="badge badge-warning">Medio</span></td>
+                                <td>El mantenimiento de conexiones <em>keep-alive</em> (salientes) evade las reglas restrictivas de NAT del firewall, habilitando la inyección de cambios de firmware o comandos remotos sin capacidad de auditoría local por parte del administrador de la red.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid-text-img" style="margin-top: 25px;">
+                    <div>
+                        <h3>Estrategia de Mitigación Definitiva</h3>
+                        <div class="data-box" style="border-left: 4px solid var(--success);">
+                            <strong>1. Segmentación Lógica (VLAN)</strong>
+                            <span>Aislar obligatoriamente el dispositivo inteligente en una <strong>VLAN dedicada (Red IoT)</strong> o Red de Invitados. Esta red debe configurarse con políticas de firewall estrictas (ACLs) que nieguen rotundamente cualquier paquete dirigido hacia la red principal (LAN) corporativa o personal.</span>
+                            
+                            <strong style="margin-top: 15px;">2. Bloqueo de Egresos (Opcional)</strong>
+                            <span>Si se requiere un entorno 100% aislado (operación en red local únicamente), aplicar una regla de <em>Drop</em> en el router perimetral bloqueando las IPs destino o el puerto TCP 8815, asumiendo que esto anulará la capacidad de controlarlo remotamente vía app.</span>
+                        </div>
+                    </div>
+                    <div class="cyber-img-container">
+                        <img src="https://cdn.prod.website-files.com/62e153e41d6ee298cc9a98f7/65f873c1bdf9ad3d4b2259a6_Captura.JPG" alt="Diagrama de Segmentación VLAN" class="cyber-img">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <section>
+            <div class="cyber-img-container">
+                <h2>Video Completo.</h2>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/nzJM55Pdt4c?si=ckrJzF8NCxuws1MK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+            
+          
+        </section>
+
+
+        <div class="info-box reflection-box">
+            <h2>Reflexión Personal</h2>
+            <p>La adopción masiva de dispositivos IoT "inteligentes" y de bajo costo a menudo sacrifica la seguridad en favor de la comodidad del usuario (Plug & Play). Esta auditoría demuestra claramente que un simple foco no se limita a recibir comandos de encendido y apagado, sino que actúa como un agente de telemetría constante que puede perfilar la actividad de un hogar u oficina, enviando datos a infraestructuras en el extranjero sin cifrado robusto.</p>
+            <p>A nivel técnico, comprender cómo interceptar y analizar este tráfico mediante técnicas de Man-in-the-Middle (ARP Spoofing) es fundamental para cualquier ingeniero de ciberseguridad. Nos enseña que la regla de oro para la domótica, ya sea empresarial o doméstica, es la segmentación estricta (VLANs). Bajo el principio de Zero Trust, nunca debemos permitir que un dispositivo IoT genérico comparta el mismo segmento de red que nuestras bases de datos, servidores o equipos de trabajo personales.</p>
+        </div>
+
+        <footer>
+            <p>Análisis de Tráfico y Seguridad en Redes IoT | CNO V - Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
