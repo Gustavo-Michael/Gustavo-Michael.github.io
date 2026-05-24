@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PR03: Implementación SGSI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --accent: #58a6ff;
+            --accent-glow: rgba(88, 166, 255, 0.5);
+            --success: #238636;
+            --warning: #d29922;
+            --danger: #da3633;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --card-glass: rgba(22, 27, 34, 0.65);
+            --border-glass: rgba(88, 166, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            overflow-wrap: break-word; /* Evita que el texto largo rompa la página completa */
+        }
+
+        /* FONDO ANIMADO Y CAPA OSCURA */
+        .cyber-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('../Design/matrix2.gif'); 
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            background-color: #000000;
+        }
+
+        .cyber-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(360deg, rgba(0, 0, 0, 0.93) 0%, rgba(13, 17, 23, 0.82) 100%);
+            backdrop-filter: blur(4px);
+            z-index: -1;
+        }
+
+        /* NAVBAR GLOBAL EFECTO CRISTAL */
+        .global-header {
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 15px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header-brand { 
+            color: var(--accent); 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            text-decoration: none; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .global-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 25px; }
+        .global-nav a { color: var(--text-main); text-decoration: none; font-weight: bold; font-size: 0.95em; transition: all 0.3s ease; }
+        .global-nav a:hover, .global-nav a.active { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-glass);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-titles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 { color: var(--accent); margin: 0; font-size: 1.8em; text-shadow: 0 0 15px var(--accent-glow); }
+        .author-name { color: var(--text-muted); font-size: 1.1em; margin: 5px 0 0 0; font-weight: bold; }
+
+        /* BOTÓN DESCARGAR DIRECTO */
+        .btn-pdf {
+            background-color: rgba(218, 54, 51, 0.1);
+            color: #ff7b72;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--danger);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(218, 54, 51, 0.2);
+            white-space: nowrap; /* Evita que el texto del botón se parta */
+        }
+        .btn-pdf:hover { 
+            background-color: var(--danger);
+            color: white;
+            box-shadow: 0 0 20px rgba(218, 54, 51, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* CARD GENERAL */
+        .scenario-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            margin-bottom: 35px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .scenario-header {
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .scenario-header h2 { margin: 0; color: #fff; font-size: 1.4em; }
+        .scenario-header p { margin: 5px 0 0 0; color: var(--text-muted); font-size: 0.9em; }
+
+        .scenario-body {
+            padding: 25px;
+        }
+
+        /* GRIDS DE SEPARACIÓN (Actualizados para no desbordar) */
+        .grid-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        
+        /* Media Queries más agresivos para proteger el diseño */
+        @media (max-width: 1024px) {
+            .grid-4col { grid-template-columns: repeat(2, 1fr); }
+            .grid-3col { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .grid-4col, .grid-2col { grid-template-columns: 1fr; }
+        }
+
+        /* BLOQUES DE INFORMACIÓN SINTETIZADA */
+        .info-box {
+            background: var(--card-glass);
+            border: 1px solid var(--border-glass);
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* CAJAS INTERNAS (Flexbox arreglado para evitar desbordes) */
+        .data-box {
+            background: rgba(10, 14, 20, 0.5);
+            border: 1px solid var(--border-glass);
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column; /* Asegura que el contenido se apile sin salir */
+            word-break: break-word; /* Rompe palabras largas si es necesario */
+        }
+        .data-box:hover { border-color: var(--accent); background: rgba(10, 14, 20, 0.7); }
+        .data-box strong { color: var(--accent); display: block; margin-bottom: 6px; font-size: 1.1em; border-bottom: 1px dashed rgba(88, 166, 255, 0.2); padding-bottom: 4px; }
+        
+        /* CAJA CON SCROLL (Glosario) */
+        .scroll-box {
+            max-height: 250px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-glass);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-word;
+        }
+        
+        /* TABLAS ESTILO CYBER (Solución a desbordes) */
+        .cyber-table-container { 
+            overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+            margin-top: 15px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-glass); 
+            background: rgba(0,0,0,0.2); 
+        }
+        .cyber-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 0.85em; 
+            min-width: 800px; /* Fuerza el scroll si la pantalla es muy chica */
+            text-align: left; 
+            table-layout: auto; 
+        }
+        .cyber-table th { background: rgba(88, 166, 255, 0.15); color: var(--accent); padding: 12px; border-bottom: 1px solid var(--border-glass); text-transform: uppercase; letter-spacing: 1px; }
+        .cyber-table td { 
+            padding: 10px 12px; 
+            border-bottom: 1px solid var(--border-glass); 
+            color: var(--text-main); 
+            vertical-align: top;
+            word-wrap: break-word; /* Protege las celdas de la tabla */
+        }
+        .cyber-table tr:hover { background: rgba(88, 166, 255, 0.05); }
+
+        /* IMÁGENES Y MULTIMEDIA */
+        .canva-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Ratio 16:9 */
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            margin-top: 20px;
+        }
+        .canva-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+        .scenario-body h3 { color: var(--accent); font-size: 1.2em; margin-top: 25px; border-bottom: 1px dashed var(--border-glass); padding-bottom: 8px; }
+        .scenario-body h3:first-child { margin-top: 0; }
+        
+        ul.custom-list { list-style: none; padding-left: 0; margin-top: 10px; }
+        ul.custom-list li { margin-bottom: 10px; padding-left: 20px; position: relative; font-size: 0.95em; }
+        ul.custom-list li::before { content: "►"; color: var(--success); position: absolute; left: 0; font-size: 0.8em; top: 3px; }
+
+        .reflection-box { border-left: 4px solid var(--success); margin-top: 50px; }
+        .reflection-box h2 { margin-top: 0; color: var(--success); border-bottom: 1px dashed var(--border-glass); padding-bottom: 10px; }
+
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; white-space: nowrap; }
+        .badge-danger { background: rgba(218, 54, 51, 0.15); color: #ff7b72; border: 1px solid var(--danger); }
+        .badge-warning { background: rgba(210, 153, 34, 0.15); color: #e3b341; border: 1px solid var(--warning); }
+        .badge-success { background: rgba(35, 134, 54, 0.15); color: #7ee787; border: 1px solid var(--success); }
+        .badge-info { background: rgba(88, 166, 255, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+
+        footer { margin-top: 40px; padding: 20px 0 40px 0; border-top: 1px solid var(--border-glass); text-align: center; font-size: 0.8em; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-bg"></div>
+    <div class="cyber-overlay"></div>
+
+    <header class="global-header">
+        <a href="../index.html" class="header-brand">Portafolio CNO V</a>
+        <nav class="global-nav">
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../index.html#evidencias">Actividades</a></li>
+                <li><a href="PR-02.html" class="active">Proyectos</a></li>
+                <li><a href="../Cursos/cursos.html">Cursos</a></li>
+                <li><a href="extras.html">Extras</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="header-actions">
+            <div class="header-titles">
+                <h1>PR03: Implementación SGSI (ISO/IEC 27001)</h1>
+                <p class="author-name">Por: Gustavo Michael Larios Guerra | Equipo 3</p>
+            </div>
+            <a href="../PDFs/PR03-Equipo3.pdf" class="btn-pdf" download>
+                <i class="fas fa-file-pdf"></i> Descargar Reporte Completo
+            </a>
+        </div>
+
+        <div class="info-box">
+            <p><strong>Empresa Analizada:</strong> Viakon (Grupo Xignux)</p>
+            <p><strong>Objetivo del SGSI:</strong> Establecer, implementar y auditar los requisitos críticos para la protección de los activos de información gestionados por las direcciones de Administración y Tecnologías de la Información (TI). El proyecto garantiza el cumplimiento de la tríada CID mitigando riesgos asociados al manejo de bases de datos, redes, identidades y activos físicos, basado en el marco ISO/IEC 27001.</p>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>Sección 1 & 4: Alcance e Inventario Detallado de Activos</h2>
+                <p>Mapeo exhaustivo de la infraestructura tecnológica, procesos asociados y su nivel de criticidad.</p>
+            </div>
+            <div class="scenario-body">
+                <h3>Inventario de Activos Internos (TI y Administración)</h3>
+                <p>Los activos fueron clasificados según su impacto en Confidencialidad, Integridad y Disponibilidad (CID) para la continuidad del negocio.</p>
+                <div class="cyber-table-container">
+                    <table class="cyber-table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Activo de Información</th>
+                                <th>Responsable Operativo</th>
+                                <th>Proceso Asociado</th>
+                                <th>Clasificación (CID)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ACT-INT-01</td>
+                                <td>Bases de datos (SQL Server)</td>
+                                <td>Administrador de BD</td>
+                                <td>Gestión de datos críticos</td>
+                                <td><span class="badge badge-danger">C: Alta | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-02</td>
+                                <td>Programa de capacitación (LMS)</td>
+                                <td>Coordinador de capacitación</td>
+                                <td>Capacitación continua</td>
+                                <td><span class="badge badge-warning">C: Media | I: Media | D: Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-03</td>
+                                <td>Software de monitoreo de red / NOC</td>
+                                <td>Analista de monitoreo</td>
+                                <td>Monitoreo de infraestructura</td>
+                                <td><span class="badge badge-danger">C: Media | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-04</td>
+                                <td>Registros de usuarios (Directorio Activo)</td>
+                                <td>Administrador de identidades</td>
+                                <td>Control de acceso</td>
+                                <td><span class="badge badge-danger">C: Alta | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-05</td>
+                                <td>Impresoras empresariales (Planta)</td>
+                                <td>Soporte TI</td>
+                                <td>Impresión de documentos</td>
+                                <td><span class="badge badge-warning">C: Media | I: Media | D: Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-06</td>
+                                <td>Equipos de cómputo (Workstations)</td>
+                                <td>Usuario final / Soporte TI</td>
+                                <td>Operaciones diarias</td>
+                                <td><span class="badge badge-warning">C: Media | I: Media | D: Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-07</td>
+                                <td>Herramientas de adm. remota (VPN)</td>
+                                <td>Administrador de sistemas</td>
+                                <td>Soporte remoto</td>
+                                <td><span class="badge badge-danger">C: Alta | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-08</td>
+                                <td>Servidores físicos y virtuales (CPD)</td>
+                                <td>Arquitecto de sistemas</td>
+                                <td>Procesamiento central</td>
+                                <td><span class="badge badge-danger">C: Alta | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-09</td>
+                                <td>Intranet Corporativa</td>
+                                <td>Webmaster</td>
+                                <td>Comunicación interna</td>
+                                <td><span class="badge badge-warning">C: Media | I: Media | D: Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-10</td>
+                                <td>ERPs Corporativos (SAP/Oracle)</td>
+                                <td>Líder funcional ERP</td>
+                                <td>Gestión del negocio</td>
+                                <td><span class="badge badge-danger">C: Alta | I: Alta | D: Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-11</td>
+                                <td>Documentación y procesos (Repositorio)</td>
+                                <td>Documentador</td>
+                                <td>Gestión de calidad</td>
+                                <td><span class="badge badge-warning">C: Media | I: Alta | D: Media</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>Sección 6: Planificación y Matriz de Riesgos</h2>
+                <p>Cálculo de probabilidad (P) e impacto (I) para la determinación de controles técnicos.</p>
+            </div>
+            <div class="scenario-body">
+                <h3>Análisis de Amenazas (Riesgo Inherente vs Residual)</h3>
+                <p>El cálculo se realizó mediante una escala del 1 al 5. Aquellos activos cuyo nivel de riesgo superó el umbral de aceptación (Mayor a 12 puntos) requirieron planes de tratamiento obligatorios.</p>
+                
+                <div class="cyber-table-container">
+                    <table class="cyber-table">
+                        <thead>
+                            <tr>
+                                <th>Activo</th>
+                                <th>Amenaza Identificada</th>
+                                <th>P </th>
+                                <th>I </th>
+                                <th>Riesgo Total</th>
+                                <th>Controles Mitigadores ISO 27002</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ACT-INT-01 / 04 <br><span class="badge badge-info">BD e Identidades</span></td>
+                                <td>Ataque de Ransomware / Exfiltración de datos confidenciales por falta de segmentación.</td>
+                                <td>4</td>
+                                <td>5</td>
+                                <td><span class="badge badge-danger">20 (Extremo)</span></td>
+                                <td>Cifrado TDE, MFA para accesos admin, Respaldos inmutables e IDS perimetral.</td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-07 / 10 <br><span class="badge badge-info">VPN y ERP</span></td>
+                                <td>Suplantación de identidad (Phishing) / Secuestro de sesión remota (Session Hijacking).</td>
+                                <td>5</td>
+                                <td>4</td>
+                                <td><span class="badge badge-danger">20 (Extremo)</span></td>
+                                <td>VPN IPsec, Políticas Zero Trust, Sesiones con tiempo límite (15 min), Segregación de funciones (SoD).</td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-08 <br><span class="badge badge-info">Servidores CPD</span></td>
+                                <td>Interrupción del servicio por falla eléctrica o acceso físico no autorizado.</td>
+                                <td>3</td>
+                                <td>5</td>
+                                <td><span class="badge badge-warning">15 (Alto)</span></td>
+                                <td>Controles biométricos, Redundancia HVAC/UPS, Hardening de sistemas operativos (CIS Benchmarks).</td>
+                            </tr>
+                            <tr>
+                                <td>ACT-INT-06 <br><span class="badge badge-info">Workstations</span></td>
+                                <td>Infección por Malware mediante descargas no autorizadas o USBs maliciosos.</td>
+                                <td>4</td>
+                                <td>3</td>
+                                <td><span class="badge badge-warning">12 (Medio)</span></td>
+                                <td>Cifrado FDE de disco completo, Bloqueo de puertos USB (GPO), EDR desplegado.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>Sección 8: Operación y Ciclo PDCA</h2>
+                <p>Aplicación de la mejora continua sobre la política de Servidores Físicos y Virtuales.</p>
+            </div>
+            <div class="scenario-body">
+                <div class="grid-2col">
+                    <div class="data-box">
+                        <strong>1. Plan (Planear)</strong>
+                        <span>Objetivo: Proteger el acceso físico/lógico, segmentar VLANs y aplicar Hardening. Meta: RTO ≤ 2 horas y disponibilidad del 99.9%. Se identificaron riesgos críticos como ataques de denegación de servicio e intrusiones físicas.</span>
+                    </div>
+                    <div class="data-box">
+                        <strong>2. Do (Hacer)</strong>
+                        <span>Instalación de controles biométricos de acceso, configuración de firewalls, deshabilitación de puertos/servicios inseguros (Telnet/FTP) y programación de tareas automáticas de backup cruzado.</span>
+                    </div>
+                    <div class="data-box">
+                        <strong>3. Check (Verificar)</strong>
+                        <span>Auditorías recurrentes de acceso físico, escaneo de vulnerabilidades mediante herramientas automatizadas, pruebas de restauración de respaldos y revisión constante de logs a través del SIEM.</span>
+                    </div>
+                    <div class="data-box">
+                        <strong>4. Act (Actuar)</strong>
+                        <span>Resolución de hallazgos de auditoría (Mejora continua), actualización de las configuraciones de hardening según nuevos CVEs, automatización de alertas críticas y ejecución de simulacros DRP.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card">
+            <div class="scenario-header">
+                <h2>Sección 9 & 10: Respuesta a Incidentes (Caso Real)</h2>
+                <p>Análisis de Causa Raíz de Incidentes (INC-2026-054) y Dictamen Final de la Auditoría.</p>
+            </div>
+            <div class="scenario-body">
+                
+                <div class="grid-2col" style="margin-bottom: 30px;">
+                    <div>
+                        <h3>Reporte del Incidente</h3>
+                        <p><strong>Vector de Entrada:</strong> Un atacante evadió el MFA utilizando técnicas de <em>Session Hijacking</em> para secuestrar una sesión activa legítima.</p>
+                        <p><strong>Explotación:</strong> La cuenta comprometida carecía de segregación de funciones adecuada en el ERP, lo que permitió al atacante escalar privilegios y moverse lateralmente hacia los servidores centrales antes de intentar desplegar cargas destructivas.</p>
+                    </div>
+                    <div>
+                        <h3>Métricas de Contención</h3>
+                        <div class="data-box" style="margin-bottom: 10px;">
+                            <strong>MTTD (Tiempo de Detección)</strong>
+                            <span class="badge badge-success">14 Minutos</span> - Resultado Positivo. El SOC reaccionó rápidamente gracias a alertas tempranas de anomalías en red.
+                        </div>
+                        <div class="data-box">
+                            <strong>MTTR (Tiempo de Respuesta)</strong>
+                            <span class="badge badge-danger">4 Horas 15 Minutos</span> - Área de Oportunidad. Se integrarán playbooks SOAR (Orquestación automatizada) para aislar VLANs instantáneamente en el futuro.
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Dictamen Final de Auditoría Interna</h3>
+                <div class="data-box" style="border-color: var(--success); text-align: center;">
+                    <span style="font-size: 1.5em; font-weight: bold; color: var(--success);">ESTADO GLOBAL: 85% (CUMPLE)</span><br>
+                    <span style="color: var(--text-main);">El entorno demuestra una arquitectura de identidad sólida (Zero Trust) y resiliencia en la capa perimetral. Se emitieron No Conformidades Menores por retrasos en la sanitización de documentación física.</span>
+                </div>
+
+                <h3>Presentación Ejecutiva del Proyecto</h3>
+                <div class="canva-container">
+                    <iframe loading="lazy" src="https://www.canva.com/design/DAHI8daKxF0/hDQLCAxXKVa9RXOZK8RULw/view?embed" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box reflection-box">
+            <h2>Reflexión Personal</h2>
+            <p>La implementación documentada de un Sistema de Gestión de Seguridad de la Información (SGSI) bajo el estándar ISO/IEC 27001 demuestra que la ciberseguridad corporativa va mucho más allá de configurar firewalls o instalar antivirus. Requiere una orquestación holística donde convergen el liderazgo gerencial, el análisis probabilístico de riesgos (como lo vimos en la matriz calculada) y el compromiso de cada colaborador de la empresa ("Energizadores").</p>
+            <p>Al analizar los incidentes (como el secuestro de sesión detallado en el PR03), queda en evidencia que los activos más vulnerables suelen ser las identidades y los privilegios mal gestionados. Este proyecto me permitió comprender que documentar, auditar y ejecutar ciclos de mejora continua (PDCA) son habilidades críticas para cualquier profesional de seguridad, pues transforman el caos de un ciberataque en una respuesta estructurada, medible y resiliente orientada a salvaguardar los activos críticos listados en el inventario.</p>
+        </div>
+
+        <footer>
+            <p>Gestión Normativa y Respuesta a Incidentes | CNO V - Seguridad Informática</p>
+            <p>© 2026 Portafolio de Evidencias</p>
+        </footer>
+    </div>
+
+</body>
+</html>
